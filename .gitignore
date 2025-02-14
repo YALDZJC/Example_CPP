@@ -1,0 +1,10 @@
+DBUS_test/MDK-ARM/DBUS_test/
+DBUS_test/MDK-ARM/DBUS_test/
+DBUS_test/MDKARM/build/
+DBUS_test\MDK-ARM\DBUS_test_EIDE\
+DBUS_test/MDK-ARM/DBUS_test/
+DBUS_test/MDK-ARM/*.uvoptx
+DBUS_test/MDK-ARM/*.uvguix.*
+.vs/
+.vscode/
+CppProperties.json
