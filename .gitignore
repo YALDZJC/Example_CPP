@@ -5,6 +5,15 @@ DBUS_test\MDK-ARM\DBUS_test_EIDE\
 DBUS_test/MDK-ARM/DBUS_test/
 DBUS_test/MDK-ARM/*.uvoptx
 DBUS_test/MDK-ARM/*.uvguix.*
+
+Motor_test/MDK-ARM/DBUS_test/
+Motor_test/MDK-ARM/DBUS_test/
+Motor_test/MDKARM/build/
+Motor_test\MDK-ARM\DBUS_test_EIDE\
+Motor_test/MDK-ARM/DBUS_test/
+Motor_test/MDK-ARM/*.uvoptx
+Motor_test/MDK-ARM/*.uvguix.*
+
 .vs/
 .vscode/
 CppProperties.json
