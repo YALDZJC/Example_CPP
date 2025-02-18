@@ -10,8 +10,7 @@ Motor_test/MDK-ARM/DBUS_test/
 Motor_test/MDK-ARM/DBUS_test/
 Motor_test/MDKARM/build/
 Motor_test/MDKARM/Eide/
-Motor_test\MDK-ARM\DBUS_test_EIDE\
-Motor_test/MDK-ARM/DBUS_test/
+Motor_test/MDK-ARM/Motor_test/
 Motor_test/MDK-ARM/*.uvoptx
 Motor_test/MDK-ARM/*.uvguix.*
 

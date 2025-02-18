@@ -31,6 +31,7 @@ void Can_Init()
 	// 设置中断
 	HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING);
 }
+
 void Can_Send(CAN_HandleTypeDef *han, uint32_t StdId, uint8_t *s_data, uint32_t pTxMailbox)
 {
 	CAN_TxHeaderTypeDef TxHeader;

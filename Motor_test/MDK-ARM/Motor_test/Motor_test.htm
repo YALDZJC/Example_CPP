@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Motor_test\Motor_test.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Motor_test\Motor_test.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Mon Feb 17 14:02:10 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Tue Feb 18 10:13:36 2025
 <BR><P>
 <H3>Maximum Stack Usage =        240 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -117,14 +117,14 @@ Function Pointers
  <LI><a href="#[51]">USART6_IRQHandler</a> from stm32f4xx_it.o(.text.USART6_IRQHandler) referenced from startup_stm32f407xx.o(RESET)
  <LI><a href="#[5]">UsageFault_Handler</a> from stm32f4xx_it.o(.text.UsageFault_Handler) referenced from startup_stm32f407xx.o(RESET)
  <LI><a href="#[a]">WWDG_IRQHandler</a> from startup_stm32f407xx.o(.text) referenced from startup_stm32f407xx.o(RESET)
- <LI><a href="#[65]">_GLOBAL__sub_I_CallBack.cpp</a> from callback.o(.text._GLOBAL__sub_I_CallBack.cpp) referenced from callback.o(.init_array)
- <LI><a href="#[62]">Can::Dji::GM2006::getCurrent(float)</a> from callback.o(.text._ZN3Can3Dji6GM200610getCurrentEf) referenced from callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
- <LI><a href="#[61]">Can::Dji::GM2006::getAddAngle(float)</a> from callback.o(.text._ZN3Can3Dji6GM200611getAddAngleEf) referenced from callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
- <LI><a href="#[60]">Can::Dji::GM2006::getLastAngle(float)</a> from callback.o(.text._ZN3Can3Dji6GM200612getLastAngleEf) referenced from callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
- <LI><a href="#[64]">Can::Dji::GM2006::getTemperature(float)</a> from callback.o(.text._ZN3Can3Dji6GM200614getTemperatureEf) referenced from callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
- <LI><a href="#[5f]">Can::Dji::GM2006::getAngle(float)</a> from callback.o(.text._ZN3Can3Dji6GM20068getAngleEf) referenced from callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
- <LI><a href="#[63]">Can::Dji::GM2006::getTorque(float)</a> from callback.o(.text._ZN3Can3Dji6GM20069getTorqueEf) referenced from callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
- <LI><a href="#[5e]">__cxa_pure_virtual</a> from cxa_virtual.cpp.o(.text.__cxa_pure_virtual) referenced 6 times from djimotor.o(.rodata._ZTVN3Can3Dji12DjiMotorBaseE)
+ <LI><a href="#[62]">Can::Dji::GM2006&lang;(unsigned char)2&rang;::getCurrent(float)</a> from djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE10getCurrentEf) referenced from djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
+ <LI><a href="#[61]">Can::Dji::GM2006&lang;(unsigned char)2&rang;::getAddAngle(float)</a> from djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE11getAddAngleEf) referenced from djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
+ <LI><a href="#[60]">Can::Dji::GM2006&lang;(unsigned char)2&rang;::getLastAngle(float)</a> from djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE12getLastAngleEf) referenced from djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
+ <LI><a href="#[64]">Can::Dji::GM2006&lang;(unsigned char)2&rang;::getTemperature(float)</a> from djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE14getTemperatureEf) referenced from djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
+ <LI><a href="#[5f]">Can::Dji::GM2006&lang;(unsigned char)2&rang;::getAngle(float)</a> from djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE8getAngleEf) referenced from djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
+ <LI><a href="#[63]">Can::Dji::GM2006&lang;(unsigned char)2&rang;::getTorque(float)</a> from djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE9getTorqueEf) referenced from djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
+ <LI><a href="#[5e]">__cxa_pure_virtual</a> from cxa_virtual.cpp.o(.text.__cxa_pure_virtual) referenced 6 times from djimotor.o(.rodata._ZTVN3Can3Dji12DjiMotorBaseILh2EEE)
+ <LI><a href="#[65]">__cxx_global_var_init</a> from callback.o(.text.__cxx_global_var_init) referenced from callback.o(.init_array)
  <LI><a href="#[5c]">__main</a> from __main.o(!!!main) referenced from startup_stm32f407xx.o(.text)
 </UL>
 <P>
@@ -145,9 +145,9 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
 </UL>
 
-<P><STRONG><a name="[f0]"></a>__scatterload_rt2_thumb_only</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
+<P><STRONG><a name="[ef]"></a>__scatterload_rt2_thumb_only</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
 
-<P><STRONG><a name="[f1]"></a>__scatterload_null</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
+<P><STRONG><a name="[f0]"></a>__scatterload_null</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
 
 <P><STRONG><a name="[6a]"></a>__scatterload_copy</STRONG> (Thumb, 26 bytes, Stack size unknown bytes, __scatter_copy.o(!!handler_copy), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload_copy
@@ -155,7 +155,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload_copy
 </UL>
 
-<P><STRONG><a name="[f2]"></a>__scatterload_zeroinit</STRONG> (Thumb, 28 bytes, Stack size unknown bytes, __scatter_zi.o(!!handler_zi), UNUSED)
+<P><STRONG><a name="[f1]"></a>__scatterload_zeroinit</STRONG> (Thumb, 28 bytes, Stack size unknown bytes, __scatter_zi.o(!!handler_zi), UNUSED)
 
 <P><STRONG><a name="[71]"></a>__rt_lib_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit.o(.ARM.Collect$$libinit$$00000000))
 <BR><BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_li
@@ -165,13 +165,13 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_init
 </UL>
 
-<P><STRONG><a name="[f3]"></a>__rt_lib_init_alloca_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000030))
+<P><STRONG><a name="[f2]"></a>__rt_lib_init_alloca_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000030))
 
-<P><STRONG><a name="[f4]"></a>__rt_lib_init_argv_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000002E))
+<P><STRONG><a name="[f3]"></a>__rt_lib_init_argv_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000002E))
 
-<P><STRONG><a name="[f5]"></a>__rt_lib_init_atexit_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001D))
+<P><STRONG><a name="[f4]"></a>__rt_lib_init_atexit_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001D))
 
-<P><STRONG><a name="[f6]"></a>__rt_lib_init_clock_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000023))
+<P><STRONG><a name="[f5]"></a>__rt_lib_init_clock_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000023))
 
 <P><STRONG><a name="[6d]"></a>__rt_lib_init_cpp_2</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000033))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16 + Unknown Stack Size
@@ -180,65 +180,65 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cpp_initialize__aeabi_
 </UL>
 
-<P><STRONG><a name="[f7]"></a>__rt_lib_init_exceptions_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000032))
+<P><STRONG><a name="[f6]"></a>__rt_lib_init_exceptions_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000032))
 
-<P><STRONG><a name="[f8]"></a>__rt_lib_init_fp_trap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000021))
+<P><STRONG><a name="[f7]"></a>__rt_lib_init_fp_trap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000021))
 
-<P><STRONG><a name="[f9]"></a>__rt_lib_init_getenv_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000025))
+<P><STRONG><a name="[f8]"></a>__rt_lib_init_getenv_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000025))
 
-<P><STRONG><a name="[fa]"></a>__rt_lib_init_heap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000C))
+<P><STRONG><a name="[f9]"></a>__rt_lib_init_heap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000C))
 
-<P><STRONG><a name="[fb]"></a>__rt_lib_init_lc_collate_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000013))
+<P><STRONG><a name="[fa]"></a>__rt_lib_init_lc_collate_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000013))
 
-<P><STRONG><a name="[fc]"></a>__rt_lib_init_lc_ctype_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000015))
+<P><STRONG><a name="[fb]"></a>__rt_lib_init_lc_ctype_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000015))
 
-<P><STRONG><a name="[fd]"></a>__rt_lib_init_lc_monetary_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000017))
+<P><STRONG><a name="[fc]"></a>__rt_lib_init_lc_monetary_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000017))
 
-<P><STRONG><a name="[fe]"></a>__rt_lib_init_lc_numeric_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000019))
+<P><STRONG><a name="[fd]"></a>__rt_lib_init_lc_numeric_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000019))
 
-<P><STRONG><a name="[ff]"></a>__rt_lib_init_lc_time_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001B))
+<P><STRONG><a name="[fe]"></a>__rt_lib_init_lc_time_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001B))
 
-<P><STRONG><a name="[100]"></a>__rt_lib_init_preinit_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000006))
+<P><STRONG><a name="[ff]"></a>__rt_lib_init_preinit_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000006))
 
-<P><STRONG><a name="[101]"></a>__rt_lib_init_rand_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000010))
+<P><STRONG><a name="[100]"></a>__rt_lib_init_rand_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000010))
 
-<P><STRONG><a name="[102]"></a>__rt_lib_init_relocate_pie_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000004))
+<P><STRONG><a name="[101]"></a>__rt_lib_init_relocate_pie_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000004))
 
-<P><STRONG><a name="[103]"></a>__rt_lib_init_signal_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001F))
+<P><STRONG><a name="[102]"></a>__rt_lib_init_signal_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001F))
 
-<P><STRONG><a name="[104]"></a>__rt_lib_init_stdio_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000027))
+<P><STRONG><a name="[103]"></a>__rt_lib_init_stdio_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000027))
 
-<P><STRONG><a name="[105]"></a>__rt_lib_init_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000E))
+<P><STRONG><a name="[104]"></a>__rt_lib_init_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000E))
 
-<P><STRONG><a name="[106]"></a>__rt_lib_init_cpp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000034))
+<P><STRONG><a name="[105]"></a>__rt_lib_init_cpp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000034))
 
-<P><STRONG><a name="[107]"></a>__rt_lib_init_return</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000035))
+<P><STRONG><a name="[106]"></a>__rt_lib_init_return</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000035))
 
 <P><STRONG><a name="[76]"></a>__rt_lib_shutdown</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown.o(.ARM.Collect$$libshutdown$$00000000))
 <BR><BR>[Called By]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_exit_ls
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
 </UL>
 
-<P><STRONG><a name="[108]"></a>__rt_lib_shutdown_cpp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000002))
+<P><STRONG><a name="[107]"></a>__rt_lib_shutdown_cpp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000002))
 
-<P><STRONG><a name="[109]"></a>__rt_lib_shutdown_fp_trap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000007))
+<P><STRONG><a name="[108]"></a>__rt_lib_shutdown_fp_trap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000007))
 
-<P><STRONG><a name="[10a]"></a>__rt_lib_shutdown_heap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000F))
+<P><STRONG><a name="[109]"></a>__rt_lib_shutdown_heap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000F))
 
-<P><STRONG><a name="[10b]"></a>__rt_lib_shutdown_return</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000010))
+<P><STRONG><a name="[10a]"></a>__rt_lib_shutdown_return</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000010))
 
-<P><STRONG><a name="[10c]"></a>__rt_lib_shutdown_signal_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000A))
+<P><STRONG><a name="[10b]"></a>__rt_lib_shutdown_signal_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000A))
 
-<P><STRONG><a name="[10d]"></a>__rt_lib_shutdown_stdio_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000004))
+<P><STRONG><a name="[10c]"></a>__rt_lib_shutdown_stdio_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000004))
 
-<P><STRONG><a name="[10e]"></a>__rt_lib_shutdown_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000C))
+<P><STRONG><a name="[10d]"></a>__rt_lib_shutdown_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000C))
 
 <P><STRONG><a name="[68]"></a>__rt_entry</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry.o(.ARM.Collect$$rtentry$$00000000))
 <BR><BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload_rt2
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
 </UL>
 
-<P><STRONG><a name="[10f]"></a>__rt_entry_presh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000002))
+<P><STRONG><a name="[10e]"></a>__rt_entry_presh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000002))
 
 <P><STRONG><a name="[6e]"></a>__rt_entry_sh</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry4.o(.ARM.Collect$$rtentry$$00000004))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8 + Unknown Stack Size
@@ -251,7 +251,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_lib_init
 </UL>
 
-<P><STRONG><a name="[110]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
+<P><STRONG><a name="[10f]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[72]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
 <BR><BR>[Stack]<UL><LI>Max Depth = 240 + Unknown Stack Size
@@ -261,7 +261,7 @@ Global Symbols
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
 </UL>
 
-<P><STRONG><a name="[111]"></a>__rt_entry_postli_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000C))
+<P><STRONG><a name="[110]"></a>__rt_entry_postli_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000C))
 
 <P><STRONG><a name="[7d]"></a>__rt_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rtexit.o(.ARM.Collect$$rtexit$$00000000))
 <BR><BR>[Called By]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -271,7 +271,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_lib_shutdown
 </UL>
 
-<P><STRONG><a name="[112]"></a>__rt_exit_prels_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rtexit2.o(.ARM.Collect$$rtexit$$00000002))
+<P><STRONG><a name="[111]"></a>__rt_exit_prels_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rtexit2.o(.ARM.Collect$$rtexit$$00000002))
 
 <P><STRONG><a name="[77]"></a>__rt_exit_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rtexit2.o(.ARM.Collect$$rtexit$$00000004))
 <BR><BR>[Calls]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_sys_exit
@@ -496,23 +496,23 @@ Global Symbols
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_SetConfig
 </UL>
 
-<P><STRONG><a name="[113]"></a>_ll_udiv</STRONG> (Thumb, 240 bytes, Stack size 48 bytes, lludivv7m.o(.text), UNUSED)
+<P><STRONG><a name="[112]"></a>_ll_udiv</STRONG> (Thumb, 240 bytes, Stack size 48 bytes, lludivv7m.o(.text), UNUSED)
 
 <P><STRONG><a name="[e2]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rt_memclr_w.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 </UL>
 
-<P><STRONG><a name="[114]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rt_memclr_w.o(.text), UNUSED)
+<P><STRONG><a name="[113]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rt_memclr_w.o(.text), UNUSED)
 
-<P><STRONG><a name="[115]"></a>__rt_memclr_w</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rt_memclr_w.o(.text), UNUSED)
+<P><STRONG><a name="[114]"></a>__rt_memclr_w</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rt_memclr_w.o(.text), UNUSED)
 
-<P><STRONG><a name="[116]"></a>_memset_w</STRONG> (Thumb, 74 bytes, Stack size 4 bytes, rt_memclr_w.o(.text), UNUSED)
+<P><STRONG><a name="[115]"></a>_memset_w</STRONG> (Thumb, 74 bytes, Stack size 4 bytes, rt_memclr_w.o(.text), UNUSED)
 
-<P><STRONG><a name="[117]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+<P><STRONG><a name="[116]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
-<P><STRONG><a name="[118]"></a>__rt_heap_escrow$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+<P><STRONG><a name="[117]"></a>__rt_heap_escrow$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
-<P><STRONG><a name="[119]"></a>__rt_heap_expand$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+<P><STRONG><a name="[118]"></a>__rt_heap_expand$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
 <P><STRONG><a name="[66]"></a>__cpp_initialize__aeabi_</STRONG> (Thumb, 28 bytes, Stack size 16 bytes, init_aeabi.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = __cpp_initialize__aeabi_
@@ -528,7 +528,7 @@ Global Symbols
 <LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_SIGABRT
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_sys_exit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort_message
+<BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort_message
 </UL>
 
 <P><STRONG><a name="[78]"></a>_sys_exit</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, sys_exit.o(.text))
@@ -565,19 +565,19 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
 </UL>
 
-<P><STRONG><a name="[11a]"></a>__user_libspace</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, libspace.o(.text), UNUSED)
+<P><STRONG><a name="[119]"></a>__user_libspace</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, libspace.o(.text), UNUSED)
 
 <P><STRONG><a name="[7b]"></a>__user_perproc_libspace</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, libspace.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__user_setup_stackheap
 </UL>
 
-<P><STRONG><a name="[11b]"></a>__user_perthread_libspace</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, libspace.o(.text), UNUSED)
+<P><STRONG><a name="[11a]"></a>__user_perthread_libspace</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, libspace.o(.text), UNUSED)
 
-<P><STRONG><a name="[11c]"></a>__I$use$semihosting</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
+<P><STRONG><a name="[11b]"></a>__I$use$semihosting</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
 
-<P><STRONG><a name="[11d]"></a>__use_no_semihosting_swi</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
+<P><STRONG><a name="[11c]"></a>__use_no_semihosting_swi</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
 
-<P><STRONG><a name="[11e]"></a>__semihosting_library_function</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, indicate_semi.o(.text), UNUSED)
+<P><STRONG><a name="[11d]"></a>__semihosting_library_function</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, indicate_semi.o(.text), UNUSED)
 
 <P><STRONG><a name="[7f]"></a>__sig_exit</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, defsig_exit.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_sys_exit
@@ -611,28 +611,28 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
 <P><STRONG><a name="[1e]"></a>CAN1_RX0_IRQHandler</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, stm32f4xx_it.o(.text.CAN1_RX0_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 228<LI>Call Chain = CAN1_RX0_IRQHandler &rArr; HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
+<BR><BR>[Stack]<UL><LI>Max Depth = 188<LI>Call Chain = CAN1_RX0_IRQHandler &rArr; HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_IRQHandler
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
 <P><STRONG><a name="[1f]"></a>CAN1_RX1_IRQHandler</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, stm32f4xx_it.o(.text.CAN1_RX1_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 228<LI>Call Chain = CAN1_RX1_IRQHandler &rArr; HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
+<BR><BR>[Stack]<UL><LI>Max Depth = 188<LI>Call Chain = CAN1_RX1_IRQHandler &rArr; HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_IRQHandler
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
 <P><STRONG><a name="[4a]"></a>CAN2_RX0_IRQHandler</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, stm32f4xx_it.o(.text.CAN2_RX0_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 228<LI>Call Chain = CAN2_RX0_IRQHandler &rArr; HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
+<BR><BR>[Stack]<UL><LI>Max Depth = 188<LI>Call Chain = CAN2_RX0_IRQHandler &rArr; HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_IRQHandler
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
 <P><STRONG><a name="[4b]"></a>CAN2_RX1_IRQHandler</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, stm32f4xx_it.o(.text.CAN2_RX1_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 228<LI>Call Chain = CAN2_RX1_IRQHandler &rArr; HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
+<BR><BR>[Stack]<UL><LI>Max Depth = 188<LI>Call Chain = CAN2_RX1_IRQHandler &rArr; HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_IRQHandler
 </UL>
@@ -696,16 +696,16 @@ Global Symbols
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 </UL>
 
-<P><STRONG><a name="[e8]"></a>HAL_CAN_ActivateNotification</STRONG> (Thumb, 82 bytes, Stack size 16 bytes, stm32f4xx_hal_can.o(.text.HAL_CAN_ActivateNotification))
+<P><STRONG><a name="[e7]"></a>HAL_CAN_ActivateNotification</STRONG> (Thumb, 82 bytes, Stack size 16 bytes, stm32f4xx_hal_can.o(.text.HAL_CAN_ActivateNotification))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = HAL_CAN_ActivateNotification
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can_Init()
 </UL>
 
-<P><STRONG><a name="[e7]"></a>HAL_CAN_ConfigFilter</STRONG> (Thumb, 420 bytes, Stack size 24 bytes, stm32f4xx_hal_can.o(.text.HAL_CAN_ConfigFilter))
+<P><STRONG><a name="[e6]"></a>HAL_CAN_ConfigFilter</STRONG> (Thumb, 420 bytes, Stack size 24 bytes, stm32f4xx_hal_can.o(.text.HAL_CAN_ConfigFilter))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = HAL_CAN_ConfigFilter
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_Filter_Init()
+<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_Filter_Init()
 </UL>
 
 <P><STRONG><a name="[90]"></a>HAL_CAN_ErrorCallback</STRONG> (Thumb, 8 bytes, Stack size 4 bytes, stm32f4xx_hal_can.o(.text.HAL_CAN_ErrorCallback))
@@ -721,7 +721,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[82]"></a>HAL_CAN_IRQHandler</STRONG> (Thumb, 1010 bytes, Stack size 48 bytes, stm32f4xx_hal_can.o(.text.HAL_CAN_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 220<LI>Call Chain = HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
+<BR><BR>[Stack]<UL><LI>Max Depth = 180<LI>Call Chain = HAL_CAN_IRQHandler &rArr; HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_ErrorCallback
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_WakeUpFromRxMsgCallback
@@ -770,10 +770,10 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[8b]"></a>HAL_CAN_RxFifo0MsgPendingCallback</STRONG> (Thumb, 126 bytes, Stack size 72 bytes, callback.o(.text.HAL_CAN_RxFifo0MsgPendingCallback))
-<BR><BR>[Stack]<UL><LI>Max Depth = 172<LI>Call Chain = HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
+<BR><BR>[Stack]<UL><LI>Max Depth = 132<LI>Call Chain = HAL_CAN_RxFifo0MsgPendingCallback &rArr; Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_GetRxMessage
-<LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*)
+<LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_IRQHandler
 </UL>
@@ -1251,7 +1251,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[ef]"></a>MX_GPIO_Init</STRONG> (Thumb, 210 bytes, Stack size 24 bytes, gpio.o(.text.MX_GPIO_Init))
+<P><STRONG><a name="[ee]"></a>MX_GPIO_Init</STRONG> (Thumb, 210 bytes, Stack size 24 bytes, gpio.o(.text.MX_GPIO_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = MX_GPIO_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -1404,10 +1404,10 @@ Global Symbols
 <P><STRONG><a name="[5]"></a>UsageFault_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f4xx_it.o(.text.UsageFault_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
-<P><STRONG><a name="[e6]"></a>CAN_Filter_Init()</STRONG> (Thumb, 74 bytes, Stack size 56 bytes, bsp_can.o(.text._Z15CAN_Filter_Initv))
+<P><STRONG><a name="[e5]"></a>CAN_Filter_Init()</STRONG> (Thumb, 74 bytes, Stack size 56 bytes, bsp_can.o(.text._Z15CAN_Filter_Initv))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = CAN_Filter_Init() &rArr; HAL_CAN_ConfigFilter
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_ConfigFilter
+<BR>[Calls]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_ConfigFilter
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can_Init()
 </UL>
@@ -1415,101 +1415,89 @@ Global Symbols
 <P><STRONG><a name="[d5]"></a>Can_Init()</STRONG> (Thumb, 58 bytes, Stack size 24 bytes, bsp_can.o(.text._Z8Can_Initv))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = Can_Init() &rArr; CAN_Filter_Init() &rArr; HAL_CAN_ConfigFilter
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_ActivateNotification
+<BR>[Calls]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_ActivateNotification
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_Start
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_Filter_Init()
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_Filter_Init()
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init
 </UL>
 
-<P><STRONG><a name="[ec]"></a>Can::Dji::DjiMotorBase::_Motor_ID_IDX_BIND_(unsigned char*, unsigned char)</STRONG> (Thumb, 112 bytes, Stack size 20 bytes, djimotor.o(.text._ZN3Can3Dji12DjiMotorBase19_Motor_ID_IDX_BIND_EPhh))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = Can::Dji::DjiMotorBase::_Motor_ID_IDX_BIND_(unsigned char*, unsigned char)
+<P><STRONG><a name="[98]"></a>Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*)</STRONG> (Thumb, 188 bytes, Stack size 56 bytes, djimotor.o(.text._ZN3Can3Dji12DjiMotorBaseILh2EE5ParseE19CAN_RxHeaderTypeDefPKh))
+<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
-<BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase::DjiMotorBase__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*)
-</UL>
-
-<P><STRONG><a name="[ea]"></a>Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)</STRONG> (Thumb, 94 bytes, Stack size 20 bytes, djimotor.o(.text._ZN3Can3Dji12DjiMotorBase26GET_Motor_ID_ADDRESS_BIND_Ei))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
-</UL>
-<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*)
-</UL>
-
-<P><STRONG><a name="[98]"></a>Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*)</STRONG> (Thumb, 190 bytes, Stack size 80 bytes, djimotor.o(.text._ZN3Can3Dji12DjiMotorBase5ParseE19CAN_RxHeaderTypeDefPKh))
-<BR><BR>[Stack]<UL><LI>Max Depth = 100<LI>Call Chain = Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*) &rArr; Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
-</UL>
-<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::CAN_ID(CAN_RxHeaderTypeDef const&)
-<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int)
+<BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_RxFifo0MsgPendingCallback
 </UL>
 
-<P><STRONG><a name="[eb]"></a>Can::Dji::DjiMotorBase::DjiMotorBase__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*)</STRONG> (Thumb, 128 bytes, Stack size 32 bytes, djimotor.o(.text._ZN3Can3Dji12DjiMotorBaseC2EshPNS0_16DjiMotorFeedbackEPh))
-<BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = Can::Dji::DjiMotorBase::DjiMotorBase__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*) &rArr; Can::Dji::DjiMotorBase::_Motor_ID_IDX_BIND_(unsigned char*, unsigned char)
+<P><STRONG><a name="[ea]"></a>Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::DjiMotorBase__sub_object(unsigned short, unsigned char const (&) [2])</STRONG> (Thumb, 86 bytes, Stack size 24 bytes, djimotor.o(.text._ZN3Can3Dji12DjiMotorBaseILh2EEC2EtRA2_Kh))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::DjiMotorBase__sub_object(unsigned short, unsigned char const (&) [2])
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase::_Motor_ID_IDX_BIND_(unsigned char*, unsigned char)
-</UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::GM2006::GM2006__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*)
+<BR>[Called By]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::GM2006&lang;(unsigned char)2&rang;::GM2006(unsigned short, unsigned char const (&) [2])
 </UL>
 
-<P><STRONG><a name="[62]"></a>Can::Dji::GM2006::getCurrent(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, callback.o(.text._ZN3Can3Dji6GM200610getCurrentEf))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006::getCurrent(float)
+<P><STRONG><a name="[62]"></a>Can::Dji::GM2006&lang;(unsigned char)2&rang;::getCurrent(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE10getCurrentEf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006&lang;(unsigned char)2&rang;::getCurrent(float)
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
+<BR>[Address Reference Count : 1]<UL><LI> djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
 </UL>
-<P><STRONG><a name="[61]"></a>Can::Dji::GM2006::getAddAngle(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, callback.o(.text._ZN3Can3Dji6GM200611getAddAngleEf))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006::getAddAngle(float)
+<P><STRONG><a name="[61]"></a>Can::Dji::GM2006&lang;(unsigned char)2&rang;::getAddAngle(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE11getAddAngleEf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006&lang;(unsigned char)2&rang;::getAddAngle(float)
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
+<BR>[Address Reference Count : 1]<UL><LI> djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
 </UL>
-<P><STRONG><a name="[60]"></a>Can::Dji::GM2006::getLastAngle(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, callback.o(.text._ZN3Can3Dji6GM200612getLastAngleEf))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006::getLastAngle(float)
+<P><STRONG><a name="[60]"></a>Can::Dji::GM2006&lang;(unsigned char)2&rang;::getLastAngle(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE12getLastAngleEf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006&lang;(unsigned char)2&rang;::getLastAngle(float)
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
+<BR>[Address Reference Count : 1]<UL><LI> djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
 </UL>
-<P><STRONG><a name="[64]"></a>Can::Dji::GM2006::getTemperature(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, callback.o(.text._ZN3Can3Dji6GM200614getTemperatureEf))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006::getTemperature(float)
+<P><STRONG><a name="[64]"></a>Can::Dji::GM2006&lang;(unsigned char)2&rang;::getTemperature(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE14getTemperatureEf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006&lang;(unsigned char)2&rang;::getTemperature(float)
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
+<BR>[Address Reference Count : 1]<UL><LI> djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
 </UL>
-<P><STRONG><a name="[5f]"></a>Can::Dji::GM2006::getAngle(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, callback.o(.text._ZN3Can3Dji6GM20068getAngleEf))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006::getAngle(float)
+<P><STRONG><a name="[5f]"></a>Can::Dji::GM2006&lang;(unsigned char)2&rang;::getAngle(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE8getAngleEf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006&lang;(unsigned char)2&rang;::getAngle(float)
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
+<BR>[Address Reference Count : 1]<UL><LI> djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
 </UL>
-<P><STRONG><a name="[63]"></a>Can::Dji::GM2006::getTorque(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, callback.o(.text._ZN3Can3Dji6GM20069getTorqueEf))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006::getTorque(float)
+<P><STRONG><a name="[63]"></a>Can::Dji::GM2006&lang;(unsigned char)2&rang;::getTorque(float)</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EE9getTorqueEf))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Can::Dji::GM2006&lang;(unsigned char)2&rang;::getTorque(float)
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> callback.o(.rodata._ZTVN3Can3Dji6GM2006E)
+<BR>[Address Reference Count : 1]<UL><LI> djimotor.o(.rodata._ZTVN3Can3Dji6GM2006ILh2EEE)
 </UL>
-<P><STRONG><a name="[ed]"></a>Can::Dji::GM2006::GM2006__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*)</STRONG> (Thumb, 66 bytes, Stack size 32 bytes, callback.o(.text._ZN3Can3Dji6GM2006C2EshPNS0_16DjiMotorFeedbackEPh))
-<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Can::Dji::GM2006::GM2006__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*) &rArr; Can::Dji::DjiMotorBase::DjiMotorBase__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*) &rArr; Can::Dji::DjiMotorBase::_Motor_ID_IDX_BIND_(unsigned char*, unsigned char)
+<P><STRONG><a name="[e9]"></a>Can::Dji::GM2006&lang;(unsigned char)2&rang;::GM2006(unsigned short, unsigned char const (&) [2])</STRONG> (Thumb, 44 bytes, Stack size 24 bytes, djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EEC2EtRA2_Kh))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = Can::Dji::GM2006&lang;(unsigned char)2&rang;::GM2006(unsigned short, unsigned char const (&) [2]) &rArr; Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::DjiMotorBase__sub_object(unsigned short, unsigned char const (&) [2])
 </UL>
-<BR>[Calls]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase::DjiMotorBase__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*)
+<BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::DjiMotorBase__sub_object(unsigned short, unsigned char const (&) [2])
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxx_global_var_init
+<BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxx_global_var_init
 </UL>
 
-<P><STRONG><a name="[e9]"></a>Can::CAN_ID(CAN_RxHeaderTypeDef const&)</STRONG> (Thumb, 12 bytes, Stack size 4 bytes, djimotor.o(.text._ZN3Can6CAN_IDERK19CAN_RxHeaderTypeDef))
+<P><STRONG><a name="[11e]"></a>Can::Dji::GM2006&lang;(unsigned char)2&rang;::GM2006__sub_object(unsigned short, unsigned char const (&) [2])</STRONG> (Thumb, 44 bytes, Stack size 24 bytes, djimotor.o(.text._ZN3Can3Dji6GM2006ILh2EEC2EtRA2_Kh), UNUSED)
+
+<P><STRONG><a name="[e8]"></a>Can::CAN_ID(CAN_RxHeaderTypeDef const&)</STRONG> (Thumb, 12 bytes, Stack size 4 bytes, djimotor.o(.text._ZN3Can6CAN_IDERK19CAN_RxHeaderTypeDef))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = Can::CAN_ID(CAN_RxHeaderTypeDef const&)
 </UL>
-<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase::Parse(CAN_RxHeaderTypeDef, unsigned char const*)
+<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::DjiMotorBase&lang;(unsigned char)2&rang;::Parse(CAN_RxHeaderTypeDef, unsigned char const*)
 </UL>
 
 <P><STRONG><a name="[5e]"></a>__cxa_pure_virtual</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, cxa_virtual.cpp.o(.text.__cxa_pure_virtual))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48 + Unknown Stack Size
 <LI>Call Chain = __cxa_pure_virtual &rArr; abort_message &rArr; abort &rArr; __rt_SIGABRT &rArr; __rt_SIGABRT_inner &rArr; __default_signal_display &rArr; _ttywrch
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort_message
+<BR>[Calls]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort_message
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> djimotor.o(.rodata._ZTVN3Can3Dji12DjiMotorBaseE)
+<BR>[Address Reference Count : 1]<UL><LI> djimotor.o(.rodata._ZTVN3Can3Dji12DjiMotorBaseILh2EEE)
 </UL>
-<P><STRONG><a name="[ee]"></a>abort_message</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, abort_message.cpp.o(.text.abort_message))
+<P><STRONG><a name="[eb]"></a>abort_message</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, abort_message.cpp.o(.text.abort_message))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48 + Unknown Stack Size
 <LI>Call Chain = abort_message &rArr; abort &rArr; __rt_SIGABRT &rArr; __rt_SIGABRT_inner &rArr; __default_signal_display &rArr; _ttywrch
 </UL>
 <BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxa_pure_virtual
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxa_guard_acquire
 </UL>
 
 <P><STRONG><a name="[73]"></a>main</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, main.o(.text.main))
@@ -1526,11 +1514,24 @@ Global Symbols
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_CAN2_Init
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_CAN1_Init
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_DMA_Init
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
+</UL>
+
+<P><STRONG><a name="[ec]"></a>__cxa_guard_acquire</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, cxa_guard.cpp.o(.text.unlikely.__cxa_guard_acquire))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56 + Unknown Stack Size
+<LI>Call Chain = __cxa_guard_acquire &rArr; abort_message &rArr; abort &rArr; __rt_SIGABRT &rArr; __rt_SIGABRT_inner &rArr; __default_signal_display &rArr; _ttywrch
+</UL>
+<BR>[Calls]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abort_message
+</UL>
+<BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxx_global_var_init
+</UL>
+
+<P><STRONG><a name="[ed]"></a>__cxa_guard_release</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, cxa_guard.cpp.o(.text.unlikely.__cxa_guard_release))
+<BR><BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxx_global_var_init
 </UL>
 
 <P><STRONG><a name="[6c]"></a>_fp_init</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, fpinit.o(x$fpl$fpinit))
@@ -1675,18 +1676,13 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_IRQHandler
 </UL>
 
-<P><STRONG><a name="[e5]"></a>__cxx_global_var_init</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, callback.o(.text.__cxx_global_var_init))
-<BR><BR>[Stack]<UL><LI>Max Depth = 100<LI>Call Chain = __cxx_global_var_init &rArr; Can::Dji::GM2006::GM2006__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*) &rArr; Can::Dji::DjiMotorBase::DjiMotorBase__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*) &rArr; Can::Dji::DjiMotorBase::_Motor_ID_IDX_BIND_(unsigned char*, unsigned char)
+<P><STRONG><a name="[65]"></a>__cxx_global_var_init</STRONG> (Thumb, 90 bytes, Stack size 16 bytes, callback.o(.text.__cxx_global_var_init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72 + Unknown Stack Size
+<LI>Call Chain = __cxx_global_var_init &rArr; __cxa_guard_acquire &rArr; abort_message &rArr; abort &rArr; __rt_SIGABRT &rArr; __rt_SIGABRT_inner &rArr; __default_signal_display &rArr; _ttywrch
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::GM2006::GM2006__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*)
-</UL>
-<BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_GLOBAL__sub_I_CallBack.cpp
-</UL>
-
-<P><STRONG><a name="[65]"></a>_GLOBAL__sub_I_CallBack.cpp</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, callback.o(.text._GLOBAL__sub_I_CallBack.cpp))
-<BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = _GLOBAL__sub_I_CallBack.cpp &rArr; __cxx_global_var_init &rArr; Can::Dji::GM2006::GM2006__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*) &rArr; Can::Dji::DjiMotorBase::DjiMotorBase__sub_object(short, unsigned char, Can::Dji::DjiMotorFeedback*, unsigned char*) &rArr; Can::Dji::DjiMotorBase::_Motor_ID_IDX_BIND_(unsigned char*, unsigned char)
-</UL>
-<BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxx_global_var_init
+<BR>[Calls]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxa_guard_release
+<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can::Dji::GM2006&lang;(unsigned char)2&rang;::GM2006(unsigned short, unsigned char const (&) [2])
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__cxa_guard_acquire
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> callback.o(.init_array)
 </UL><P>

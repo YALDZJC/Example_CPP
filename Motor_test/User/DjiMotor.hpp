@@ -1,7 +1,10 @@
+
+#pragma once
 // 基础DJI电机实现
 #include "../User/MotorBase.hpp"
 
 #include "can.h"
+#include <cstring> // 添加头文件
 
 #define _Motor2006_SIZE 2
 
@@ -25,28 +28,83 @@ typedef struct
 namespace Dji
 {
 
-struct alignas(uint64_t) DjiMotorFeedback
-{
-    int16_t angle;
-    int16_t velocity;
-    int16_t current;
-    uint8_t temperature;
-    uint8_t unused;
-};
-
-class DjiMotorBase
+template <uint8_t N> class DjiMotorBase
 {
   public:
-    DjiMotorBase(int16_t address, uint8_t MotorSize, DjiMotorFeedback *MotorAddress, uint8_t *idxs);
+    struct alignas(uint64_t) DjiMotorFeedback
+    {
+        int16_t angle;
+        int16_t velocity;
+        int16_t current;
+        uint8_t temperature;
+        uint8_t unused;
+    };
 
-    void Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData);
+    void Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData)
+    {
+        const uint16_t received_id = CAN_ID(RxHeader);
+
+        for (uint8_t i = 0; i < N; ++i)
+        {
+            if (received_id == init_address + idxs[i])
+            {
+                memcpy(&feedback_[i], pData, sizeof(DjiMotorFeedback));
+                feedback_[i].angle = __builtin_bswap16(feedback_[i].angle);
+                feedback_[i].velocity = __builtin_bswap16(feedback_[i].velocity);
+                feedback_[i].current = __builtin_bswap16(feedback_[i].current);
+
+                break;
+            }
+        }
+    }
     // 设置id
-    void setMSD(send_data *msd, int16_t data, int id);
+    void setMSD(send_data *msd, int16_t data, int id)
+    {
+        msd->Data[(id - 1) * 2] = data >> 8;
+        msd->Data[(id - 1) * 2 + 1] = data << 8 >> 8;
+    }
+
+  protected:
+    const int16_t init_address;
+    uint8_t idxs[N]; // 电机最大个数
+
+    DjiMotorBase(uint16_t can_id, const uint8_t (&ids)[N]) : init_address(can_id)
+    {
+        for (uint8_t i = 0; i < N; ++i)
+        {
+            idxs[i] = ids[i];
+        }
+    }
+
+    DjiMotorFeedback feedback_[N];
 
   public:
-    void _Motor_ID_IDX_BIND_(uint8_t *ids, uint8_t size);
+    void _Motor_ID_IDX_BIND_(uint8_t *ids, uint8_t size)
+    {
+        uint8_t idxs[_Motor_ID_IDX_BIND_SIZE_];
+
+        for (uint8_t i = 0; i < _Motor_ID_IDX_BIND_SIZE_; i++) // 标记
+        {
+            this->idxs[i] = 0xff;
+        }
+        for (uint8_t i = 0; i < size; i++) // 绑定
+        {
+            this->idxs[ids[i]] = i;
+        }
+    }
     // 获取对应的下标
-    int GET_Motor_ID_ADDRESS_BIND_(int address);
+    int GET_Motor_ID_ADDRESS_BIND_(int address)
+    {
+        int idx = address - (this->init_address);
+        if (idx < 0)
+            return -1;
+        if (idx >= _Motor_ID_IDX_BIND_SIZE_)
+            return -1;
+        if (this->idxs[idx] == 0xff)
+            return -1;
+
+        return this->idxs[idx];
+    }
 
     virtual float getAngle(float n) = 0;
     virtual float getLastAngle(float n) = 0;
@@ -55,24 +113,14 @@ class DjiMotorBase
     virtual float getCurrent(float n) = 0;
     virtual float getTorque(float n) = 0;
     virtual float getTemperature(float n) = 0;
-
-  protected:
-    DjiMotorFeedback *feedback_;
-    int16_t init_address;
-    int16_t address; // 地址
-
-    uint8_t MotorSize;
-    uint8_t idxs[_Motor_ID_IDX_BIND_SIZE_]; // 电机最大个数
 };
 
-class GM2006 : public DjiMotorBase
+template <uint8_t N> class GM2006 : public DjiMotorBase<N>
 {
   public:
-    GM2006(int16_t address, uint8_t MotorSize, DjiMotorFeedback *MotorAddress, uint8_t *idxs)
-        : DjiMotorBase(address, MotorSize, MotorAddress, idxs)
+    GM2006(uint16_t can_id, const uint8_t (&ids)[N]) : DjiMotorBase<N>(can_id, ids)
     {
     }
-
     float getAngle(float n) override
     {
         return 0;
@@ -100,10 +148,8 @@ class GM2006 : public DjiMotorBase
     }
 };
 
-inline DjiMotorFeedback _Motor2006_[_Motor2006_SIZE];
-inline uint8_t _Motor2006_ID_[_Motor2006_SIZE] = {1, 2};
-
-inline GM2006 Motor2006(0x200, _Motor2006_SIZE, _Motor2006_, _Motor2006_ID_);
+// 创建包含2个电机的实例（ID 1和2）
+Can::Dji::GM2006<2> Motor2006(0x200, {1, 2});
 
 } // namespace Dji
 

@@ -1,77 +1,106 @@
-#include "DjiMotor.hpp"
-#include <cstring> // 添加头文件
+// #include "DjiMotor.hpp"
 
-namespace Can
-{
-namespace Dji
-{
-DjiMotorBase::DjiMotorBase(int16_t address, uint8_t MotorSize, DjiMotorFeedback *MotorAddress, uint8_t *idxs)
-{
-    this->_Motor_ID_IDX_BIND_(idxs, MotorSize);
+// namespace Can
+// {
+// namespace Dji
+// {
 
-    this->feedback_ = MotorAddress;
-    this->init_address = address;
-    for (uint8_t i = 0; i < MotorSize; i++)
-    {
-        this->address = address + idxs[i];
-    }
+// template <uint8_t N> void DjiMotorBase<N>::Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData)
+// {
+//     const uint16_t received_id = CAN_ID(RxHeader);
 
-    this->MotorSize = MotorSize;
-}
+//     for (uint8_t i = 0; i < N; ++i)
+//     {
+//         if (received_id == init_address + idxs[i])
+//         {
+//             memcpy(&feedback_[i], pData, sizeof(DjiMotorFeedback));
+//             feedback_[i].angle = __builtin_bswap16(feedback_[i].angle);
+//             feedback_[i].velocity = __builtin_bswap16(feedback_[i].velocity);
+//             feedback_[i].current = __builtin_bswap16(feedback_[i].current);
+//             break;
+//         }
+//     }
+// }
 
-void DjiMotorBase::_Motor_ID_IDX_BIND_(uint8_t *ids, uint8_t size)
-{
-    uint8_t idxs[_Motor_ID_IDX_BIND_SIZE_];
+// template <uint8_t N> void DjiMotorBase<N>::setMSD(send_data *msd, int16_t data, int id)
+// {
+//     msd->Data[(id - 1) * 2] = data >> 8;
+//     msd->Data[(id - 1) * 2 + 1] = data << 8 >> 8;
+// }
 
-    for (uint8_t i = 0; i < _Motor_ID_IDX_BIND_SIZE_; i++) // 标记
-    {
-        this->idxs[i] = 0xff;
-    }
-    for (uint8_t i = 0; i < size; i++) // 绑定
-    {
-        this->idxs[ids[i]] = i;
-    }
-}
+// template <uint8_t N> DjiMotorBase<N>::DjiMotorBase(uint16_t can_id, const uint8_t (&ids)[N]) : init_address(can_id)
+// {
+//     for (uint8_t i = 0; i < N; ++i)
+//     {
+//         idxs[i] = ids[i];
+//     }
+// }
 
-int DjiMotorBase::GET_Motor_ID_ADDRESS_BIND_(int address)
-{
-    int idx = address - (this->init_address);
-    if (idx < 0)
-        return -1;
-    if (idx >= _Motor_ID_IDX_BIND_SIZE_)
-        return -1;
-    if (this->idxs[idx] == 0xff)
-        return -1;
+// template <uint8_t N> void DjiMotorBase<N>::_Motor_ID_IDX_BIND_(uint8_t *ids, uint8_t size)
+// {
+//     uint8_t idxs[_Motor_ID_IDX_BIND_SIZE_];
 
-    return this->idxs[idx];
-}
+//     for (uint8_t i = 0; i < _Motor_ID_IDX_BIND_SIZE_; i++) // 标记
+//     {
+//         this->idxs[i] = 0xff;
+//     }
+//     for (uint8_t i = 0; i < size; i++) // 绑定
+//     {
+//         this->idxs[ids[i]] = i;
+//     }
+// }
 
-// 设置发送数据
-void DjiMotorBase::setMSD(send_data *msd, int16_t data, int id)
-{
-    msd->Data[(id - 1) * 2] = data >> 8;
-    msd->Data[(id - 1) * 2 + 1] = data << 8 >> 8;
-}
+// template <uint8_t N> int DjiMotorBase<N>::GET_Motor_ID_ADDRESS_BIND_(int address)
+// {
+//     int idx = address - (this->init_address);
+//     if (idx < 0)
+//         return -1;
+//     if (idx >= _Motor_ID_IDX_BIND_SIZE_)
+//         return -1;
+//     if (this->idxs[idx] == 0xff)
+//         return -1;
 
-void DjiMotorBase::Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData)
-{
-    if (!(CAN_ID(RxHeader) >= this->init_address && CAN_ID(RxHeader) <= this->init_address + 10) ||
-        this->MotorSize == 0)
-        return;
+//     return this->idxs[idx];
+// }
 
-    int idx = GET_Motor_ID_ADDRESS_BIND_(CAN_ID(RxHeader));
+// template <uint8_t N> GM2006<N>::GM2006(uint16_t can_id, const uint8_t (&ids)[N]) : DjiMotorBase<N>(can_id, ids)
+// {
+// }
 
-    if (idx == -1)
-        return; // 如果超越数组大小，或者不存在id
+// template <uint8_t N> float GM2006<N>::getAngle(float n)
+// {
+//     return 0;
+// }
 
-    uint64_t data_part_;
-    std::memcpy(&data_part_, pData, sizeof(data_part_));
+// template <uint8_t N> float GM2006<N>::getLastAngle(float n)
+// {
+//     return 0;
+// }
 
-    auto &part1 alignas(uint64_t) = *reinterpret_cast<DjiMotorFeedback *>(&data_part_);
+// template <uint8_t N> float GM2006<N>::getAddAngle(float n)
+// {
+//     return 0;
+// }
 
-    feedback_[idx].angle = __builtin_bswap16(part1.angle);
-    feedback_[idx].velocity = __builtin_bswap16(part1.velocity);
-    feedback_[idx].current = __builtin_bswap16(part1.current);
-}
-} // namespace Dji
-} // namespace Can
+// template <uint8_t N> float GM2006<N>::getCurrent(float n)
+// {
+//     return 0;
+// }
+
+// template <uint8_t N> float GM2006<N>::getTorque(float n)
+// {
+//     return 0;
+// }
+
+// template <uint8_t N> float GM2006<N>::getTemperature(float n)
+// {
+//     return 0;
+// }
+
+// // 显式实例化模板类
+// template class DjiMotorBase<2>;
+// template class GM2006<2>;
+
+// } // namespace Dji
+
+// } // namespace Can
