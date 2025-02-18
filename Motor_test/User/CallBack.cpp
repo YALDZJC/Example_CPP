@@ -6,7 +6,7 @@
 // 创建0x200类型的电机
 void Init()
 {
-    Can_Init();
+    CAN::BSP::Can_Init();
 }
 
 // can_filo0中断接收
@@ -16,5 +16,5 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxHeaderData);
 
-    Can::Dji::Motor2006.Parse(RxHeader, RxHeaderData);
+    CAN::Motor::Dji::Motor2006.Parse(RxHeader, RxHeaderData);
 }
