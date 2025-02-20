@@ -3,8 +3,6 @@
 
 namespace CAN
 {
-
-
 namespace BSP
 {
 // 获取Canid
