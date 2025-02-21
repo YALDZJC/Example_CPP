@@ -1,0 +1,278 @@
+#include "DjiMotor.hpp"
+
+namespace CAN::Motor::DM
+{
+// 参数结构体定义
+struct Parameters
+{
+    float P_MIN = 0.0;
+    float P_MAX = 0.0;
+
+    float V_MIN = 0.0;
+    float V_MAX = 0.0;
+
+    float T_MIN = 0.0;
+    float T_MAX = 0.0;
+
+    float KP_MIN = 0.0;
+    float KP_MAX = 0.0;
+
+    float KD_MIN = 0.0;
+    float KD_MAX = 0.0;
+
+    static constexpr uint32_t VelMode = 0x200;
+    static constexpr uint32_t PosVelMode = 0x100;
+
+    static constexpr double rad_to_deg = 1 / 0.017453292519611;
+
+    // 构造函数带参数计算
+    Parameters(float pmin, float pmax, float vmin, float vmax, float tmin, float tmax, float kpmin, float kpmax,
+               float kdmin, float kdmax)
+        : P_MIN(pmin), P_MAX(pmax), V_MIN(vmin), V_MAX(vmax), T_MIN(tmin), T_MAX(tmax), KP_MIN(kpmin), KP_MAX(kpmax),
+          KD_MIN(kdmin), KD_MAX(kdmax)
+    {
+    }
+};
+
+/**
+ * @brief 大疆电机的基类
+ *
+ * @tparam N 电机总数
+ */
+template <uint8_t N> class DMMotorBase : public MotorBase<N>
+{
+  protected:
+    /**
+     * @brief Construct a new Dji Motor Base object
+     *
+     * @param can_id can的初始id 比如3508与20066就是0x200
+     * @param params 初始化转换国际单位的参数
+     */
+    DMMotorBase(uint16_t Init_id, const uint8_t (&recv_ids)[N], const uint32_t (&send_ids)[N], Parameters params)
+        : init_address(Init_id), params_(params)
+    {
+        for (uint8_t i = 0; i < N; ++i)
+        {
+            recv_idxs_[i] = recv_ids[i]; // 接收ID索引
+            send_idxs_[i] = send_ids[i]; // 发送ID存储
+        }
+    }
+
+    Parameters CreateParams(float pmin, float pmax, float vmin, float vmax, float tmin, float tmax, float kpmin,
+                            float kpmax, float kdmin, float kdmax) const
+    {
+        return Parameters(pmin, pmax, vmin, vmax, tmin, tmax, kpmin, kpmax, kdmin, kdmax);
+    }
+
+  private:
+    float uint_to_float(int x_int, float x_min, float x_max, int bits)
+    {
+        /// converts unsigned int to float, given range and number of bits ///
+        float span = x_max - x_min;
+        float offset = x_min;
+        return ((float)x_int) * span / ((float)((1 << bits) - 1)) + offset;
+    }
+
+    int float_to_uint(float x, float x_min, float x_max, int bits)
+    {
+        /// Converts a float to an unsigned int, given range and number of bits///
+        float span = x_max - x_min;
+        float offset = x_min;
+        return (int)((x - offset) * ((float)((1 << bits) - 1)) / span);
+    }
+
+    // 定义参数生成方法的虚函数
+    virtual Parameters GetParameters() = 0; // 纯虚函数要求子类必须实现
+    /**
+     * @brief 将反馈数据转换为国际单位
+     *
+     * @param i 存结构体的id号
+     */
+    void Configure(size_t i)
+    {
+        const auto &params = GetParameters();
+
+        this->unit_data_[i].angle_Deg = feedback_[i].angle * params_.rad_to_deg;
+
+        this->unit_data_[i].angle_Rad = feedback_[i].angle;
+
+        this->unit_data_[i].velocity_Rad = feedback_[i].velocity;
+
+        this->unit_data_[i].torque_Nm = feedback_[i].torque;
+
+        this->unit_data_[i].temperature_C = feedback_[i].temperature;
+
+        double lastData = this->unit_data_[i].last_angle;
+        double Data = this->unit_data_[i].angle_Deg;
+
+        if (Data - lastData < -180) // 正转
+            this->unit_data_[i].add_angle += (360 - lastData + Data);
+        else if (Data - lastData > 180) // 反转
+            this->unit_data_[i].add_angle += -(360 - Data + lastData);
+        else
+            this->unit_data_[i].add_angle += (Data - lastData);
+
+        this->unit_data_[i].last_angle = Data;
+        // 角度计算逻辑...
+    }
+
+  public:
+    // 解析函数
+    /**
+     * @brief 解析CAN数据
+     *
+     * @param RxHeader  接收数据的句柄
+     * @param pData     接收数据的缓冲区
+     */
+    void Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData)
+    {
+        const uint16_t received_id = BSP::CAN_ID(RxHeader);
+
+        for (uint8_t i = 0; i < N; ++i)
+        {
+            if (received_id == init_address + recv_idxs_[i])
+            {
+                memcpy(&feedback_[i], pData, sizeof(DMMotorfeedback));
+
+                feedback_[i].angle = __builtin_bswap16(feedback_[i].angle);
+                feedback_[i].velocity = __builtin_bswap16(feedback_[i].velocity);
+                feedback_[i].torque = __builtin_bswap16(feedback_[i].torque);
+
+                break;
+            }
+        }
+    }
+
+    void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _pos, float _vel, float _KP, float _KD,
+                    float _torq)
+    {
+        if (motor_index >= N)
+            return; // 防止数组越界
+
+        DM_MIT mit;
+        mit.pos_tmp = float_to_uint(_pos, params_.P_MIN, params_.P_MAX, sizeof(mit.pos_tmp));
+        mit.vel_tmp = float_to_uint(_vel, params_.V_MIN, params_.V_MAX, sizeof(mit.vel_tmp));
+        mit.kp_tmp = float_to_uint(_KP, params_.KP_MIN, params_.KP_MAX, sizeof(mit.kp_tmp));
+        mit.kd_tmp = float_to_uint(_KD, params_.KD_MIN, params_.KD_MAX, sizeof(mit.kd_tmp));
+        mit.tor_tmp = float_to_uint(_torq, params_.T_MIN, params_.T_MAX, sizeof(mit.tor_tmp));
+
+        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], (uint8_t *)&mit, CAN_TX_MAILBOX2);
+    }
+
+    void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _vel, float _pos)
+    {
+        if (motor_index >= N)
+            return; // 防止数组越界
+
+        DM_VelPos posvel;
+        posvel.vel_tmp = _vel;
+        posvel.pos_tmp = _pos;
+
+        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], (uint8_t *)&posvel, CAN_TX_MAILBOX2);
+    }
+
+    void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _vel)
+    {
+        if (motor_index >= N)
+            return; // 防止数组越界
+
+        DM_Vel vel;
+        vel.vel_tmp = _vel;
+
+        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], (uint8_t *)&vel, CAN_TX_MAILBOX2);
+    }
+
+    void On(CAN_HandleTypeDef *hcan, uint8_t motor_index)
+    {
+        if (motor_index >= N)
+            return; // 防止数组越界
+
+        uint8_t send_data[8];
+        *(uint64_t *)(&send_data[0]) = 0xFCFFFFFFFFFFFFFF;
+        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
+    }
+
+    void Off(CAN_HandleTypeDef *hcan, uint8_t motor_index)
+    {
+        if (motor_index >= N)
+            return; // 防止数组越界
+
+        uint8_t send_data[8];
+        *(uint64_t *)(&send_data[0]) = 0xFDFFFFFFFFFFFFFF;
+        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
+    }
+
+    void ClearErr(CAN_HandleTypeDef *hcan, uint8_t motor_index)
+    {
+        if (motor_index >= N)
+            return; // 防止数组越界
+
+        uint8_t send_data[8];
+        *(uint64_t *)(&send_data[0]) = 0xFBFFFFFFFFFFFFFF;
+        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
+    }
+
+  protected:
+    struct alignas(uint64_t) DMMotorfeedback
+    {
+        uint8_t err;
+        int16_t angle;
+        int16_t velocity;
+        int16_t torque;
+        uint8_t temperature;
+    };
+
+    struct alignas(uint64_t) DM_MIT
+    {
+        uint16_t pos_tmp : 16;
+        uint16_t vel_tmp : 12;
+        uint16_t kp_tmp : 12;
+        uint16_t kd_tmp : 12;
+        uint16_t tor_tmp : 12;
+    };
+
+    struct alignas(uint64_t) DM_VelPos
+    {
+        float pos_tmp;
+        float vel_tmp;
+    };
+
+    struct alignas(uint32_t) DM_Vel
+    {
+        float vel_tmp;
+    };
+
+  private:
+    const int16_t init_address;   // 初始地址
+    DMMotorfeedback feedback_[N]; // 国际单位数据
+    uint8_t recv_idxs_[N];         // ID索引
+    Parameters params_;           // 转国际单位参数列表
+    uint32_t send_idxs_[N];        // 每个电机的发送ID
+};
+
+template <uint8_t N> class J4310 : public DMMotorBase<N>
+{
+  private:
+    // 定义参数生成方法
+    Parameters GetParameters() override
+    {
+        return DMMotorBase<N>::CreateParams(-12.56, 12.56, -30, 30, -10, 10, 0.0, 500, 0.0, 5.0);
+    }
+
+  public:
+    // 子类构造时传递参数
+    /**
+     * @brief dji电机构造函数
+     *
+     * @param Init_id 初始ID
+     * @param ids 电机ID列表
+     */
+    J4310(uint16_t Init_id, const uint8_t (&ids)[N], const uint32_t (&send_idxs_)[N])
+        : DMMotorBase<N>(Init_id, ids, send_idxs_, GetParameters())
+    {
+    }
+};
+
+CAN::Motor::DM::J4310<1> Motor4310(0x00, {1}, {2});
+
+} // namespace CAN::Motor::DM

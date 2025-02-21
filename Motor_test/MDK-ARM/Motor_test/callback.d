@@ -36,7 +36,8 @@ motor_test/callback.o: ..\User\CallBack.cpp ..\User\CallBack.hpp \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   ..\Core\Inc\usart.h ..\User\BSP_Can.hpp ..\User\DjiMotor.hpp \
+  ..\User\MotorBase.hpp \
   D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\cstdint \
   D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\cstring \
   D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\string.h \
-  D:\Keil5\ARM\ARMCLANG\Bin\..\include\string.h
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\string.h ..\User\DmMotor.hpp

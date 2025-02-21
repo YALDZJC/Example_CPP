@@ -1,6 +1,7 @@
 #include "CallBack.hpp"
 #include "BSP_Can.hpp"
 #include "DjiMotor.hpp"
+#include "DmMotor.hpp"
 #include "can.h"
 
 void Init()
@@ -24,8 +25,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     CAN::Motor::Dji::Motor2006.Parse(RxHeader, RxHeaderData);
 
     CAN::Motor::Dji::Motor2006.setCAN(vel, 2);
-    CAN::Motor::Dji::Motor2006.sendCAN(hcan, 0x200, 0);
+    CAN::Motor::Dji::Motor2006.sendCAN(hcan,0x200, 0);
 
     add_angle += CAN::Motor::Dji::Motor2006.getVelocityRads(2) * 0.001;
 
+    // CAN::Motor::DM::Motor4310.On(hcan, 1);
 }

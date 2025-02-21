@@ -550,19 +550,29 @@
           <GroupName>User</GroupName>
           <Files>
             <File>
-              <FileName>Bsp_Can.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\Bsp_Can.cpp</FilePath>
-            </File>
-            <File>
               <FileName>CallBack.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\CallBack.cpp</FilePath>
             </File>
             <File>
-              <FileName>DjiMotor.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\DjiMotor.cpp</FilePath>
+              <FileName>Bsp_Can.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\Bsp_Can.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>DjiMotor.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\DjiMotor.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>DmMotor.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\DmMotor.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>MotorBase.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\MotorBase.hpp</FilePath>
             </File>
           </Files>
         </Group>

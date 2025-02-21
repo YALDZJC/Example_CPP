@@ -2,7 +2,7 @@
 #pragma once
 // 基础DJI电机实现
 #include "Bsp_Can.hpp"
-
+#include "MotorBase.hpp"
 #include "can.h"
 #include <cstdint>
 #include <cstring> // 添加头文件
@@ -11,7 +11,8 @@ namespace CAN
 {
 namespace Motor
 {
-
+namespace Dji
+{
 // 参数结构体定义
 struct Parameters
 {
@@ -28,6 +29,7 @@ struct Parameters
     double feedback_to_current_coefficient; // 反馈电流转电流系数
 
     static constexpr double deg_to_rad = 0.017453292519611;
+    static constexpr double rad_to_deg = 1/0.017453292519611;
 
     // 构造函数带参数计算
     Parameters(double rr, double tc, double fmc, double mc, double er)
@@ -41,10 +43,12 @@ struct Parameters
     }
 };
 
-namespace Dji
-{
-
-template <uint8_t N> class DjiMotorBase
+/**
+ * @brief 大疆电机的基类
+ *
+ * @tparam N 电机总数
+ */
+template <uint8_t N> class DjiMotorBase : public MotorBase<N>
 {
   protected:
     /**
@@ -53,7 +57,8 @@ template <uint8_t N> class DjiMotorBase
      * @param can_id can的初始id 比如3508与20066就是0x200
      * @param params 初始化转换国际单位的参数
      */
-    DjiMotorBase(uint16_t Init_id, const uint8_t (&ids)[N], Motor::Parameters params) : init_address(Init_id), params_(params)
+    DjiMotorBase(uint16_t Init_id, const uint8_t (&ids)[N], Parameters params)
+        : init_address(Init_id), params_(params)
     {
         for (uint8_t i = 0; i < N; ++i)
         {
@@ -106,7 +111,7 @@ template <uint8_t N> class DjiMotorBase
      * @brief               发送Can数据
      *
      * @param han           Can句柄
-     * @param StdId         Can id
+     * @param StdId         Can发送id
      * @param pTxMailbox    邮箱
      */
     void sendCAN(CAN_HandleTypeDef *han, uint32_t StdId, uint32_t pTxMailbox)
@@ -115,17 +120,6 @@ template <uint8_t N> class DjiMotorBase
     }
 
   protected:
-    struct UnitData
-    {
-        double angle_Deg;
-        double last_angle;
-        double add_angle;
-        double velocity_Rad;
-        double current_A;
-        double torque_Nm;
-        double temperature_C;
-    };
-
     struct alignas(uint64_t) DjiMotorfeedback
     {
         int16_t angle;
@@ -134,6 +128,8 @@ template <uint8_t N> class DjiMotorBase
         uint8_t temperature;
         uint8_t unused;
     };
+
+
 
     /**
      * @brief Create a Params object
@@ -163,11 +159,17 @@ template <uint8_t N> class DjiMotorBase
     {
         const auto &params = GetParameters();
 
-        unit_data_[i].angle_Deg = feedback_[i].angle * params.encoder_to_deg;
-        unit_data_[i].velocity_Rad = feedback_[i].velocity * params.rpm_to_radps;
-        unit_data_[i].current_A = feedback_[i].current * params.feedback_to_current_coefficient;
-        unit_data_[i].torque_Nm = unit_data_[i].current_A * params.current_to_torque_coefficient;
-        unit_data_[i].temperature_C = feedback_[i].temperature;
+        this->unit_data_[i].angle_Deg = feedback_[i].angle * params.encoder_to_deg;
+
+        this->unit_data_[i].angle_Rad = this->unit_data_[i].angle_Deg * params.deg_to_rad;
+
+        this->unit_data_[i].velocity_Rad = feedback_[i].velocity * params.rpm_to_radps;
+
+        this->unit_data_[i].current_A = feedback_[i].current * params.feedback_to_current_coefficient;
+
+        this->unit_data_[i].torque_Nm = this->unit_data_[i].current_A * params.current_to_torque_coefficient;
+
+        this->unit_data_[i].temperature_C = feedback_[i].temperature;
 
         double lastData = this->unit_data_[i].last_angle;
         double Data = this->unit_data_[i].angle_Deg;
@@ -185,7 +187,6 @@ template <uint8_t N> class DjiMotorBase
 
     const int16_t init_address;    // 初始地址
     DjiMotorfeedback feedback_[N]; // 反馈数据
-    UnitData unit_data_[N];        // 国际单位数据
     uint8_t idxs[N];               // ID索引
     Parameters params_;            // 转国际单位参数列表
     BSP::send_data msd;
@@ -194,7 +195,8 @@ template <uint8_t N> class DjiMotorBase
     /**
      * @brief 获取角度
      *
-     * @param id can的id号，电机id - 初始id，例如3508的id为0x201，初始id为0x200，则id为0x201 - 0x200，也就是1,
+     * @param id can的id号，电机id -
+     * 初始id，例如3508的id为0x201，初始id为0x200，则id为0x201 - 0x200，也就是1,
      * @return float
      */
     float getAngleDeg(uint8_t id)
@@ -205,7 +207,8 @@ template <uint8_t N> class DjiMotorBase
     /**
      * @brief 获取弧度
      *
-     * @param id can的id号，电机id - 初始id，例如3508的id为0x201，初始id为0x200，则id为0x201 - 0x200，也就是1,
+     * @param id can的id号，电机id -
+     * 初始id，例如3508的id为0x201，初始id为0x200，则id为0x201 - 0x200，也就是1,
      * @return float
      */
     float getAngleRad(uint8_t id)
@@ -302,11 +305,16 @@ template <uint8_t N> class DjiMotorBase
     }
 };
 
+/**
+ * @brief 配置2006电机的参数
+ *
+ * @tparam N 电机数量
+ */
 template <uint8_t N> class GM2006 : public DjiMotorBase<N>
 {
   private:
     // 定义参数生成方法
-    Motor::Parameters GetParameters() override
+    Parameters GetParameters() override
     {
         return DjiMotorBase<N>::CreateParams(36.0, 0.18 * 1.0 / 36.0, 16384, 10, 8192);
     }
@@ -325,12 +333,68 @@ template <uint8_t N> class GM2006 : public DjiMotorBase<N>
 };
 
 /**
+ * @brief 配置3508电机的参数
+ *
+ * @tparam N 电机数量
+ */
+template <uint8_t N> class GM3508 : public DjiMotorBase<N>
+{
+  private:
+    // 定义参数生成方法
+    Parameters GetParameters() override
+    {
+        return DjiMotorBase<N>::CreateParams(19.0, 0.3 * 1.0 / 19.0, 16384, 20, 8192);
+    }
+
+  public:
+    // 子类构造时传递参数
+    /**
+     * @brief dji电机构造函数
+     *
+     * @param Init_id 初始ID
+     * @param ids 电机ID列表
+     */
+    GM3508(uint16_t Init_id, const uint8_t (&ids)[N]) : DjiMotorBase<N>(Init_id, ids, GetParameters())
+    {
+    }
+};
+
+/**
+ * @brief 配置6020电机的参数
+ *
+ * @tparam N 电机数量
+ */
+template <uint8_t N> class GM6020 : public DjiMotorBase<N>
+{
+  private:
+    // 定义参数生成方法
+    Parameters GetParameters() override
+    {
+        return DjiMotorBase<N>::CreateParams(1.0, 0.7 * 1.0, 16384, 3, 8192);
+    }
+
+  public:
+    // 子类构造时传递参数
+    /**
+     * @brief dji电机构造函数
+     *
+     * @param Init_id 初始ID
+     * @param ids 电机ID列表
+     */
+    GM6020(uint16_t Init_id, const uint8_t (&ids)[N]) : DjiMotorBase<N>(Init_id, ids, GetParameters())
+    {
+    }
+};
+
+/**
  * @brief 电机实例
  * 模板内的参数为电机的总数量，这里为假设有两个电机
  * 构造函数的第一个参数为初始ID，第二个参数为电机ID列表
  *
  */
 CAN::Motor::Dji::GM2006<2> Motor2006(0x200, {1, 2});
+CAN::Motor::Dji::GM3508<2> Motor3508(0x200, {1, 2});
+CAN::Motor::Dji::GM6020<2> Motor6020(0x204, {1, 2});
 
 } // namespace Dji
 } // namespace Motor
