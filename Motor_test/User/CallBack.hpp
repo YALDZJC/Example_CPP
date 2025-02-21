@@ -7,6 +7,7 @@ extern "C"
 {
 #endif // __cplusplus
     void Init();
+		void in_while();
 
 #ifdef __cplusplus
 }

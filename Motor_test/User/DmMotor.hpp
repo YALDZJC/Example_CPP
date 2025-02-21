@@ -26,6 +26,20 @@ struct Parameters
     static constexpr double rad_to_deg = 1 / 0.017453292519611;
 
     // 构造函数带参数计算
+    /**
+     * @brief Construct a new Parameters object
+     *
+     * @param pmin 位置 最小值
+     * @param pmax 位置 最大值
+     * @param vmin 速度 最小值
+     * @param vmax 速度 最大值
+     * @param tmin 力矩 最小值
+     * @param tmax 力矩 最大值
+     * @param kpmin Kp 最小值
+     * @param kpmax Kp 最大值
+     * @param kdmin Kd 最小值
+     * @param kdmax Kd 最大值
+     */
     Parameters(float pmin, float pmax, float vmin, float vmax, float tmin, float tmax, float kpmin, float kpmax,
                float kdmin, float kdmax)
         : P_MIN(pmin), P_MAX(pmax), V_MIN(vmin), V_MAX(vmax), T_MIN(tmin), T_MAX(tmax), KP_MIN(kpmin), KP_MAX(kpmax),
@@ -35,7 +49,7 @@ struct Parameters
 };
 
 /**
- * @brief 大疆电机的基类
+ * @brief 达妙电机的基类
  *
  * @tparam N 电机总数
  */
@@ -45,7 +59,7 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     /**
      * @brief Construct a new Dji Motor Base object
      *
-     * @param can_id can的初始id 比如3508与20066就是0x200
+     * @param can_id can的初始id 比如3508与2006就是0x200
      * @param params 初始化转换国际单位的参数
      */
     DMMotorBase(uint16_t Init_id, const uint8_t (&recv_ids)[N], const uint32_t (&send_ids)[N], Parameters params)
@@ -94,13 +108,13 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
 
         this->unit_data_[i].angle_Deg = feedback_[i].angle * params_.rad_to_deg;
 
-        this->unit_data_[i].angle_Rad = feedback_[i].angle;
+        this->unit_data_[i].angle_Rad = uint_to_float(feedback_[i].angle, params.P_MIN, params.P_MAX, 16);
 
-        this->unit_data_[i].velocity_Rad = feedback_[i].velocity;
+        this->unit_data_[i].velocity_Rad = uint_to_float(feedback_[i].velocity, params.V_MIN, params.V_MAX, 12);
 
-        this->unit_data_[i].torque_Nm = feedback_[i].torque;
+        this->unit_data_[i].torque_Nm = uint_to_float(feedback_[i].torque, params.T_MIN, params.T_MAX, 12);
 
-        this->unit_data_[i].temperature_C = feedback_[i].temperature;
+        this->unit_data_[i].temperature_C = feedback_[i].T_Mos;
 
         double lastData = this->unit_data_[i].last_angle;
         double Data = this->unit_data_[i].angle_Deg;
@@ -138,6 +152,16 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
                 feedback_[i].velocity = __builtin_bswap16(feedback_[i].velocity);
                 feedback_[i].torque = __builtin_bswap16(feedback_[i].torque);
 
+                // feedback_->id = pData[0] & 0xF0;
+                // feedback_->err = pData[0] & 0xF;
+                // feedback_->angle = (pData[1] << 8) | pData[2];
+                // feedback_->velocity = (pData[3] << 4) | (pData[4] >> 4);
+                // feedback_->torque = ((pData[4] & 0xF) << 8) | pData[5];
+                // feedback_->T_Mos = pData[6];
+                // feedback_->T_Rotor = pData[7];
+
+                Configure(i);
+
                 break;
             }
         }
@@ -146,24 +170,18 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _pos, float _vel, float _KP, float _KD,
                     float _torq)
     {
-        if (motor_index >= N)
-            return; // 防止数组越界
-
         DM_MIT mit;
-        mit.pos_tmp = float_to_uint(_pos, params_.P_MIN, params_.P_MAX, sizeof(mit.pos_tmp));
-        mit.vel_tmp = float_to_uint(_vel, params_.V_MIN, params_.V_MAX, sizeof(mit.vel_tmp));
-        mit.kp_tmp = float_to_uint(_KP, params_.KP_MIN, params_.KP_MAX, sizeof(mit.kp_tmp));
-        mit.kd_tmp = float_to_uint(_KD, params_.KD_MIN, params_.KD_MAX, sizeof(mit.kd_tmp));
-        mit.tor_tmp = float_to_uint(_torq, params_.T_MIN, params_.T_MAX, sizeof(mit.tor_tmp));
+        mit.pos_tmp = float_to_uint(_pos, params_.P_MIN, params_.P_MAX, 16);
+        mit.vel_tmp = float_to_uint(_vel, params_.V_MIN, params_.V_MAX, 12);
+        mit.kp_tmp = float_to_uint(_KP, params_.KP_MIN, params_.KP_MAX, 12);
+        mit.kd_tmp = float_to_uint(_KD, params_.KD_MIN, params_.KD_MAX, 12);
+        mit.tor_tmp = float_to_uint(_torq, params_.T_MIN, params_.T_MAX, 12);
 
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], (uint8_t *)&mit, CAN_TX_MAILBOX2);
     }
 
     void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _vel, float _pos)
     {
-        if (motor_index >= N)
-            return; // 防止数组越界
-
         DM_VelPos posvel;
         posvel.vel_tmp = _vel;
         posvel.pos_tmp = _pos;
@@ -173,9 +191,6 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
 
     void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _vel)
     {
-        if (motor_index >= N)
-            return; // 防止数组越界
-
         DM_Vel vel;
         vel.vel_tmp = _vel;
 
@@ -184,8 +199,8 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
 
     void On(CAN_HandleTypeDef *hcan, uint8_t motor_index)
     {
-        if (motor_index >= N)
-            return; // 防止数组越界
+        // if (motor_index >= N - 1)
+        //     return; // 防止数组越界
 
         uint8_t send_data[8];
         *(uint64_t *)(&send_data[0]) = 0xFCFFFFFFFFFFFFFF;
@@ -215,11 +230,13 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
   protected:
     struct alignas(uint64_t) DMMotorfeedback
     {
-        uint8_t err;
-        int16_t angle;
-        int16_t velocity;
-        int16_t torque;
-        uint8_t temperature;
+        uint8_t id : 4;
+        uint8_t err:4;
+        uint16_t angle;
+        uint16_t velocity : 12;
+        uint16_t torque : 12;
+        uint8_t T_Mos;
+        uint8_t T_Rotor;
     };
 
     struct alignas(uint64_t) DM_MIT
@@ -245,9 +262,9 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
   private:
     const int16_t init_address;   // 初始地址
     DMMotorfeedback feedback_[N]; // 国际单位数据
-    uint8_t recv_idxs_[N];         // ID索引
+    uint8_t recv_idxs_[N];        // ID索引
     Parameters params_;           // 转国际单位参数列表
-    uint32_t send_idxs_[N];        // 每个电机的发送ID
+    uint32_t send_idxs_[N];       // 每个电机的发送ID
 };
 
 template <uint8_t N> class J4310 : public DMMotorBase<N>
@@ -273,6 +290,6 @@ template <uint8_t N> class J4310 : public DMMotorBase<N>
     }
 };
 
-CAN::Motor::DM::J4310<1> Motor4310(0x00, {1}, {2});
+CAN::Motor::DM::J4310<1> Motor4310(0x00, {1}, {1});
 
 } // namespace CAN::Motor::DM
