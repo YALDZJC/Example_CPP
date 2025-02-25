@@ -1,5 +1,5 @@
 
-namespace CAN::Motor
+namespace BSP::Motor
 {
 
 

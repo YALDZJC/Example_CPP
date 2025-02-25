@@ -1,6 +1,6 @@
 #include "DjiMotor.hpp"
 
-namespace CAN::Motor::DM
+namespace BSP::Motor::DM
 {
 // 参数结构体定义
 struct Parameters
@@ -23,7 +23,7 @@ struct Parameters
     static constexpr uint32_t VelMode = 0x200;
     static constexpr uint32_t PosVelMode = 0x100;
 
-    static constexpr double rad_to_deg = 1 / 0.017453292519611;
+    static constexpr double rad_to_deg = 0.017453292519611;
 
     // 构造函数带参数计算
     /**
@@ -95,6 +95,19 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         return (int)((x - offset) * ((float)((1 << bits) - 1)) / span);
     }
 
+    uint16_t __builtin_bswap12(uint16_t value)
+    {
+        // 步骤 1: 提取原始字节中的位
+        uint8_t high_byte = (value >> 8) & 0x0F; // 高 4 位（原低端的高 4 位）
+        uint8_t low_byte = value & 0xFF;         // 低 8 位（原低端的低 8 位）
+
+        // 步骤 2: 重新组合字节（交换高低位）
+        uint16_t swapped = (low_byte << 4) | high_byte;
+
+        // 步骤 3: 确保结果在 12-bit 范围内
+        return swapped & 0x0FFF;
+    }
+
     // 定义参数生成方法的虚函数
     virtual Parameters GetParameters() = 0; // 纯虚函数要求子类必须实现
     /**
@@ -148,17 +161,13 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
             {
                 memcpy(&feedback_[i], pData, sizeof(DMMotorfeedback));
 
-                feedback_[i].angle = __builtin_bswap16(feedback_[i].angle);
-                feedback_[i].velocity = __builtin_bswap16(feedback_[i].velocity);
-                feedback_[i].torque = __builtin_bswap16(feedback_[i].torque);
-
-                // feedback_->id = pData[0] & 0xF0;
-                // feedback_->err = pData[0] & 0xF;
-                // feedback_->angle = (pData[1] << 8) | pData[2];
-                // feedback_->velocity = (pData[3] << 4) | (pData[4] >> 4);
-                // feedback_->torque = ((pData[4] & 0xF) << 8) | pData[5];
-                // feedback_->T_Mos = pData[6];
-                // feedback_->T_Rotor = pData[7];
+                feedback_->id = pData[0] & 0xF0;
+                feedback_->err = pData[0] & 0xF;
+                feedback_->angle = (pData[1] << 8) | pData[2];
+                feedback_->velocity = (pData[3] << 4) | (pData[4] >> 4);
+                feedback_->torque = ((pData[4] & 0xF) << 8) | pData[5];
+                feedback_->T_Mos = pData[6];
+                feedback_->T_Rotor = pData[7];
 
                 Configure(i);
 
@@ -170,14 +179,23 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _pos, float _vel, float _KP, float _KD,
                     float _torq)
     {
-        DM_MIT mit;
-        mit.pos_tmp = float_to_uint(_pos, params_.P_MIN, params_.P_MAX, 16);
-        mit.vel_tmp = float_to_uint(_vel, params_.V_MIN, params_.V_MAX, 12);
-        mit.kp_tmp = float_to_uint(_KP, params_.KP_MIN, params_.KP_MAX, 12);
-        mit.kd_tmp = float_to_uint(_KD, params_.KD_MIN, params_.KD_MAX, 12);
-        mit.tor_tmp = float_to_uint(_torq, params_.T_MIN, params_.T_MAX, 12);
+        uint16_t pos_tmp, vel_tmp, kp_tmp, kd_tmp, tor_tmp;
+        pos_tmp = float_to_uint(_pos, params_.P_MIN, params_.P_MAX, 16);
+        vel_tmp = float_to_uint(_vel, params_.V_MIN, params_.V_MAX, 12);
+        kp_tmp = float_to_uint(_KP, params_.KP_MIN, params_.KP_MAX, 12);
+        kd_tmp = float_to_uint(_KD, params_.KD_MIN, params_.KD_MAX, 12);
+        tor_tmp = float_to_uint(_torq, params_.T_MIN, params_.T_MAX, 12);
 
-        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], (uint8_t *)&mit, CAN_TX_MAILBOX2);
+        this->send_data[0] = (pos_tmp >> 8);
+        this->send_data[1] = (pos_tmp);
+        this->send_data[2] = (vel_tmp >> 4);
+        this->send_data[3] = ((vel_tmp & 0xF) << 4) | (kp_tmp >> 8);
+        this->send_data[4] = kp_tmp;
+        this->send_data[5] = (kd_tmp >> 4);
+        this->send_data[6] = ((kd_tmp & 0xF) << 4) | (tor_tmp >> 8);
+        this->send_data[7] = tor_tmp;
+
+        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
     }
 
     void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _vel, float _pos)
@@ -202,27 +220,19 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         // if (motor_index >= N - 1)
         //     return; // 防止数组越界
 
-        uint8_t send_data[8];
         *(uint64_t *)(&send_data[0]) = 0xFCFFFFFFFFFFFFFF;
+
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
     }
 
     void Off(CAN_HandleTypeDef *hcan, uint8_t motor_index)
     {
-        if (motor_index >= N)
-            return; // 防止数组越界
-
-        uint8_t send_data[8];
         *(uint64_t *)(&send_data[0]) = 0xFDFFFFFFFFFFFFFF;
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
     }
 
     void ClearErr(CAN_HandleTypeDef *hcan, uint8_t motor_index)
     {
-        if (motor_index >= N)
-            return; // 防止数组越界
-
-        uint8_t send_data[8];
         *(uint64_t *)(&send_data[0]) = 0xFBFFFFFFFFFFFFFF;
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
     }
@@ -231,21 +241,12 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     struct alignas(uint64_t) DMMotorfeedback
     {
         uint8_t id : 4;
-        uint8_t err:4;
+        uint8_t err : 4;
         uint16_t angle;
         uint16_t velocity : 12;
         uint16_t torque : 12;
         uint8_t T_Mos;
         uint8_t T_Rotor;
-    };
-
-    struct alignas(uint64_t) DM_MIT
-    {
-        uint16_t pos_tmp : 16;
-        uint16_t vel_tmp : 12;
-        uint16_t kp_tmp : 12;
-        uint16_t kd_tmp : 12;
-        uint16_t tor_tmp : 12;
     };
 
     struct alignas(uint64_t) DM_VelPos
@@ -260,11 +261,14 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     };
 
   private:
-    const int16_t init_address;   // 初始地址
+    const int16_t init_address; // 初始地址
+
+    uint8_t recv_idxs_[N];  // ID索引
+    uint32_t send_idxs_[N]; // 每个电机的发送ID
+
     DMMotorfeedback feedback_[N]; // 国际单位数据
-    uint8_t recv_idxs_[N];        // ID索引
     Parameters params_;           // 转国际单位参数列表
-    uint32_t send_idxs_[N];       // 每个电机的发送ID
+    uint8_t send_data[8];
 };
 
 template <uint8_t N> class J4310 : public DMMotorBase<N>
@@ -290,6 +294,6 @@ template <uint8_t N> class J4310 : public DMMotorBase<N>
     }
 };
 
-CAN::Motor::DM::J4310<1> Motor4310(0x00, {1}, {1});
+BSP::Motor::DM::J4310<1> Motor4310(0x00, {4}, {8});
 
 } // namespace CAN::Motor::DM

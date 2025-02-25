@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <cstring> // 添加头文件
 
-namespace CAN
+namespace BSP
 {
 namespace Motor
 {
@@ -29,7 +29,7 @@ struct Parameters
     double feedback_to_current_coefficient; // 反馈电流转电流系数
 
     static constexpr double deg_to_rad = 0.017453292519611;
-    static constexpr double rad_to_deg = 1/0.017453292519611;
+    static constexpr double rad_to_deg = 1 / 0.017453292519611;
 
     // 构造函数带参数计算
     Parameters(double rr, double tc, double fmc, double mc, double er)
@@ -57,12 +57,13 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      * @param can_id can的初始id 比如3508与20066就是0x200
      * @param params 初始化转换国际单位的参数
      */
-    DjiMotorBase(uint16_t Init_id, const uint8_t (&ids)[N], Parameters params)
+    DjiMotorBase(uint16_t Init_id, const uint8_t (&recv_idxs)[N], const uint32_t send_idxs, Parameters params)
         : init_address(Init_id), params_(params)
     {
         for (uint8_t i = 0; i < N; ++i)
         {
-            idxs[i] = ids[i];
+            recv_idxs_[i] = recv_idxs[i]; // 接收ID索引
+            send_idxs_ = send_idxs;      // 发送ID存储
         }
     }
 
@@ -80,7 +81,7 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
 
         for (uint8_t i = 0; i < N; ++i)
         {
-            if (received_id == init_address + idxs[i])
+            if (received_id == init_address + recv_idxs_[i])
             {
                 memcpy(&feedback_[i], pData, sizeof(DjiMotorfeedback));
 
@@ -114,9 +115,9 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      * @param StdId         Can发送id
      * @param pTxMailbox    邮箱
      */
-    void sendCAN(CAN_HandleTypeDef *han, uint32_t StdId, uint32_t pTxMailbox)
+    void sendCAN(CAN_HandleTypeDef *han, uint32_t pTxMailbox)
     {
-        BSP::Can_Send(han, StdId, msd.Data, pTxMailbox);
+        BSP::Can_Send(han, send_idxs_, msd.Data, pTxMailbox);
     }
 
   protected:
@@ -128,8 +129,6 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
         uint8_t temperature;
         uint8_t unused;
     };
-
-
 
     /**
      * @brief Create a Params object
@@ -187,122 +186,10 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
 
     const int16_t init_address;    // 初始地址
     DjiMotorfeedback feedback_[N]; // 反馈数据
-    uint8_t idxs[N];               // ID索引
+    uint8_t recv_idxs_[N];         // ID索引
+    uint32_t send_idxs_;
     Parameters params_;            // 转国际单位参数列表
     BSP::send_data msd;
-
-  public:
-    /**
-     * @brief 获取角度
-     *
-     * @param id can的id号，电机id -
-     * 初始id，例如3508的id为0x201，初始id为0x200，则id为0x201 - 0x200，也就是1,
-     * @return float
-     */
-    float getAngleDeg(uint8_t id)
-    {
-        return this->unit_data_[id - 1].angle_Deg;
-    }
-
-    /**
-     * @brief 获取弧度
-     *
-     * @param id can的id号，电机id -
-     * 初始id，例如3508的id为0x201，初始id为0x200，则id为0x201 - 0x200，也就是1,
-     * @return float
-     */
-    float getAngleRad(uint8_t id)
-    {
-        return this->unit_data_[id - 1].angle_Deg * this->params_.deg_to_rad;
-    }
-
-    /**
-     * @brief 获取上一次角度
-     *
-     * @param id CAN id
-     * @return float
-     */
-    float getLastAngleDeg(uint8_t id)
-    {
-        return this->unit_data_[id - 1].last_angle;
-    }
-
-    /**
-     * @brief 获取增量角度
-     *
-     * @param id CAN id
-     * @return float
-     */
-    float getAddAngleDeg(uint8_t id)
-    {
-        return this->unit_data_[id - 1].add_angle;
-    }
-
-    /**
-     * @brief 获取增量弧度
-     *
-     * @param id CAN id
-     * @return float
-     */
-    float getAddAngleRad(uint8_t id)
-    {
-        return this->unit_data_[id - 1].add_angle * this->params_.deg_to_rad;
-    }
-
-    /**
-     * @brief 获取速度    单位：(rad/s)
-     * 这里是输出轴的速度，而不是转子速度
-     * @param id CAN id
-     * @return float
-     */
-    float getVelocityRads(uint8_t id)
-    {
-        return this->unit_data_[id - 1].velocity_Rad;
-    }
-
-    /**
-     * @brief 获取速度    单位：(rpm)
-     * 这里转子速度，不是输出轴的
-     * @param id CAN id
-     * @return float
-     */
-    float getVelocityRpm(uint8_t id)
-    {
-        return this->feedback_[id - 1].velocity;
-    }
-
-    /**
-     * @brief 获取电流值    单位：(A)
-     *
-     * @param id CAN id
-     * @return float
-     */
-    float getCurrent(uint8_t id)
-    {
-        return this->unit_data_[id - 1].current_A;
-    }
-
-    /**
-     * @brief 获取力矩    单位：(Nm)
-     *
-     * @param id CAN id
-     * @return float
-     */
-    float getTorque(uint8_t id)
-    {
-        return this->unit_data_[id - 1].torque_Nm;
-    }
-
-    /**
-     * @brief 获取温度    单位：(°)
-     *
-     * @param id CAN id
-     * @return float
-     */
-    float getTemperature(uint8_t id)
-    {
-        return this->unit_data_[id - 1].temperature_C;
-    }
 };
 
 /**
@@ -325,9 +212,10 @@ template <uint8_t N> class GM2006 : public DjiMotorBase<N>
      * @brief dji电机构造函数
      *
      * @param Init_id 初始ID
-     * @param ids 电机ID列表
+     * @param recv_idxs_ 电机ID列表
      */
-    GM2006(uint16_t Init_id, const uint8_t (&ids)[N]) : DjiMotorBase<N>(Init_id, ids, GetParameters())
+    GM2006(uint16_t Init_id, const uint8_t (&recv_idxs_)[N], const uint32_t send_idxs_)
+        : DjiMotorBase<N>(Init_id, recv_idxs_, send_idxs_, GetParameters())
     {
     }
 };
@@ -352,9 +240,10 @@ template <uint8_t N> class GM3508 : public DjiMotorBase<N>
      * @brief dji电机构造函数
      *
      * @param Init_id 初始ID
-     * @param ids 电机ID列表
+     * @param recv_idxs_ 电机ID列表
      */
-    GM3508(uint16_t Init_id, const uint8_t (&ids)[N]) : DjiMotorBase<N>(Init_id, ids, GetParameters())
+    GM3508(uint16_t Init_id, const uint8_t (&recv_idxs_)[N], const uint32_t send_idxs_)
+        : DjiMotorBase<N>(Init_id, recv_idxs_, send_idxs_, GetParameters())
     {
     }
 };
@@ -379,9 +268,10 @@ template <uint8_t N> class GM6020 : public DjiMotorBase<N>
      * @brief dji电机构造函数
      *
      * @param Init_id 初始ID
-     * @param ids 电机ID列表
+     * @param recv_idxs_ 电机ID列表
      */
-    GM6020(uint16_t Init_id, const uint8_t (&ids)[N]) : DjiMotorBase<N>(Init_id, ids, GetParameters())
+    GM6020(uint16_t Init_id, const uint8_t (&recv_idxs_)[N], const uint32_t send_idxs_)
+        : DjiMotorBase<N>(Init_id, recv_idxs_, send_idxs_, GetParameters())
     {
     }
 };
@@ -389,12 +279,12 @@ template <uint8_t N> class GM6020 : public DjiMotorBase<N>
 /**
  * @brief 电机实例
  * 模板内的参数为电机的总数量，这里为假设有两个电机
- * 构造函数的第一个参数为初始ID，第二个参数为电机ID列表
+ * 构造函数的第一个参数为初始ID，第二个参数为电机ID列表,第三个参数是发送的ID
  *
  */
-CAN::Motor::Dji::GM2006<2> Motor2006(0x200, {1, 2});
-CAN::Motor::Dji::GM3508<2> Motor3508(0x200, {1, 2});
-CAN::Motor::Dji::GM6020<2> Motor6020(0x204, {1, 2});
+GM2006<2> Motor2006(0x200, {1, 2}, 0x200);
+GM3508<2> Motor3508(0x200, {1, 2}, 0x200);
+GM6020<2> Motor6020(0x204, {1, 2}, 0x1FF);
 
 } // namespace Dji
 } // namespace Motor
