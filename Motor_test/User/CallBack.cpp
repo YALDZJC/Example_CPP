@@ -26,12 +26,12 @@ void in_while()
     }
     if (is_on == 2)
     {
-
         BSP::Motor::DM::Motor4310.Off(&hcan1, 1);
         HAL_Delay(10);
 
         is_on = false;
     }
+		
     BSP::Motor::DM::Motor4310.ctrl_Motor(&hcan1, 1, 0, 0, 0, 0, vel);
     HAL_Delay(1);
 }

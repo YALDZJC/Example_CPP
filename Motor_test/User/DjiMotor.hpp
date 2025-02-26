@@ -77,7 +77,7 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      */
     void Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData)
     {
-        const uint16_t received_id = BSP::CAN_ID(RxHeader);
+        const uint16_t received_id = CAN::BSP::CAN_ID(RxHeader);
 
         for (uint8_t i = 0; i < N; ++i)
         {
@@ -112,12 +112,11 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      * @brief               发送Can数据
      *
      * @param han           Can句柄
-     * @param StdId         Can发送id
      * @param pTxMailbox    邮箱
      */
     void sendCAN(CAN_HandleTypeDef *han, uint32_t pTxMailbox)
     {
-        BSP::Can_Send(han, send_idxs_, msd.Data, pTxMailbox);
+        CAN::BSP::Can_Send(han, send_idxs_, msd.Data, pTxMailbox);
     }
 
   protected:
@@ -189,7 +188,7 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
     uint8_t recv_idxs_[N];         // ID索引
     uint32_t send_idxs_;
     Parameters params_;            // 转国际单位参数列表
-    BSP::send_data msd;
+    CAN::BSP::send_data msd;
 };
 
 /**

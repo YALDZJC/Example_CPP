@@ -147,13 +147,13 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     // 解析函数
     /**
      * @brief 解析CAN数据
-     *
+     * 因为大小端转换不方便的问题，不直接使用memcpy
      * @param RxHeader  接收数据的句柄
      * @param pData     接收数据的缓冲区
      */
     void Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData)
     {
-        const uint16_t received_id = BSP::CAN_ID(RxHeader);
+        const uint16_t received_id = CAN::BSP::CAN_ID(RxHeader);
 
         for (uint8_t i = 0; i < N; ++i)
         {
@@ -176,6 +176,18 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         }
     }
 
+    /**
+     * @brief DM电机的MIT控制方法，利用C++特性实现一个方法三种模式
+     * 由于DM电机普通模式发送数据帧较大，所以设定完发送数据后就直接发送
+     *
+     * @param hcan 电机的can句柄
+     * @param motor_index 电机序号从1开始
+     * @param _pos 设定位置
+     * @param _vel 设定速递
+     * @param _KP 设定Kp
+     * @param _KD 设定Kd
+     * @param _torq 设定力矩
+     */
     void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _pos, float _vel, float _KP, float _KD,
                     float _torq)
     {
@@ -198,6 +210,14 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
     }
 
+    /**
+     * @brief DM电机的速度和位置控制方法
+     *
+     * @param hcan 电机的can句柄
+     * @param motor_index 电机序号从1开始
+     * @param _vel 给定速度
+     * @param _pos 给定位置
+     */
     void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _vel, float _pos)
     {
         DM_VelPos posvel;
@@ -207,6 +227,13 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], (uint8_t *)&posvel, CAN_TX_MAILBOX2);
     }
 
+    /**
+     * @brief DM电机的速度控制方法
+     *
+     * @param hcan 电机的can句柄
+     * @param motor_index 电机序号从1开始
+     * @param _vel 给定速度
+     */
     void ctrl_Motor(CAN_HandleTypeDef *hcan, uint8_t motor_index, float _vel)
     {
         DM_Vel vel;
@@ -215,22 +242,37 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], (uint8_t *)&vel, CAN_TX_MAILBOX2);
     }
 
+    /**
+     * @brief 使能DM电机
+     *
+     * @param hcan 电机的can句柄
+     * @param motor_index 电机序号从1开始
+     */
     void On(CAN_HandleTypeDef *hcan, uint8_t motor_index)
     {
-        // if (motor_index >= N - 1)
-        //     return; // 防止数组越界
-
         *(uint64_t *)(&send_data[0]) = 0xFCFFFFFFFFFFFFFF;
 
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
     }
 
+    /**
+     * @brief 失能DM电机
+     *
+     * @param hcan 电机的can句柄
+     * @param motor_index 电机序号从1开始
+     */
     void Off(CAN_HandleTypeDef *hcan, uint8_t motor_index)
     {
         *(uint64_t *)(&send_data[0]) = 0xFDFFFFFFFFFFFFFF;
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
     }
 
+    /**
+     * @brief 清除DM电机错误
+     *
+     * @param hcan 电机的can句柄
+     * @param motor_index 电机序号从1开始
+     */
     void ClearErr(CAN_HandleTypeDef *hcan, uint8_t motor_index)
     {
         *(uint64_t *)(&send_data[0]) = 0xFBFFFFFFFFFFFFFF;
@@ -294,6 +336,12 @@ template <uint8_t N> class J4310 : public DMMotorBase<N>
     }
 };
 
-BSP::Motor::DM::J4310<1> Motor4310(0x00, {4}, {8});
+/**
+ * @brief 创建实例时，模板填电机个数，构造函数共三个参数
+ * 第一个是初始ID，
+ * 第二个是电机接收ID列表
+ * 第三个是电机发送ID列表
+ */
+J4310<1> Motor4310(0x00, {4}, {8});
 
 } // namespace CAN::Motor::DM
