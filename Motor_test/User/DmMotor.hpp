@@ -23,7 +23,7 @@ struct Parameters
     static constexpr uint32_t VelMode = 0x200;
     static constexpr uint32_t PosVelMode = 0x100;
 
-    static constexpr double rad_to_deg = 0.017453292519611;
+    static constexpr double rad_to_deg = 1 / 0.017453292519611;
 
     // 构造函数带参数计算
     /**
@@ -119,7 +119,7 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     {
         const auto &params = GetParameters();
 
-        this->unit_data_[i].angle_Deg = feedback_[i].angle * params_.rad_to_deg;
+        this->unit_data_[i].angle_Deg = this->unit_data_[i].angle_Rad * params_.rad_to_deg;
 
         this->unit_data_[i].angle_Rad = uint_to_float(feedback_[i].angle, params.P_MIN, params.P_MAX, 16);
 

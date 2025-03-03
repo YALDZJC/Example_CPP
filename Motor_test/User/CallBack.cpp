@@ -8,7 +8,7 @@ float vel;
 float add_angle;
 
 double dt;
-
+float kp, kd;
 uint8_t is_on;
 void Init()
 {
@@ -19,20 +19,20 @@ void in_while()
 {
     if (is_on == 1)
     {
-        BSP::Motor::DM::Motor4310.On(&hcan1, 1);
+        BSP::Motor::DM::Motor4310.On(&hcan2, 1);
         HAL_Delay(10);
 
         is_on = false;
     }
     if (is_on == 2)
     {
-        BSP::Motor::DM::Motor4310.Off(&hcan1, 1);
+        BSP::Motor::DM::Motor4310.Off(&hcan2, 1);
         HAL_Delay(10);
 
         is_on = false;
     }
-		
-    BSP::Motor::DM::Motor4310.ctrl_Motor(&hcan1, 1, 0, 0, 0, 0, vel);
+
+    BSP::Motor::DM::Motor4310.ctrl_Motor(&hcan2, 1, 0, 0, kp, kd, vel);
     HAL_Delay(1);
 }
 
