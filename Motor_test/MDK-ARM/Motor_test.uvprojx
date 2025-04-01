@@ -559,20 +559,30 @@
               <FileType>5</FileType>
               <FilePath>..\User\Bsp_Can.hpp</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Motor</GroupName>
+          <Files>
+            <File>
+              <FileName>BMMotor.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\Motor\BMMotor.hpp</FilePath>
+            </File>
             <File>
               <FileName>DjiMotor.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\User\DjiMotor.hpp</FilePath>
+              <FilePath>..\User\Motor\DjiMotor.hpp</FilePath>
             </File>
             <File>
               <FileName>DmMotor.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\User\DmMotor.hpp</FilePath>
+              <FilePath>..\User\Motor\DmMotor.hpp</FilePath>
             </File>
             <File>
               <FileName>MotorBase.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\User\MotorBase.hpp</FilePath>
+              <FilePath>..\User\Motor\MotorBase.hpp</FilePath>
             </File>
           </Files>
         </Group>

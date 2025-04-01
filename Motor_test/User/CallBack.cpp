@@ -1,7 +1,8 @@
 #include "CallBack.hpp"
+#include "../User/Motor/BMMotor.hpp"
+#include "../User/Motor/DjiMotor.hpp"
+#include "../User/Motor/DmMotor.hpp"
 #include "BSP_Can.hpp"
-#include "DjiMotor.hpp"
-#include "DmMotor.hpp"
 #include "can.h"
 
 float vel;
@@ -9,7 +10,10 @@ float add_angle;
 
 double dt;
 float kp, kd;
+float pid_out;
 uint8_t is_on;
+float rad;
+
 void Init()
 {
     CAN::BSP::Can_Init();
@@ -19,20 +23,27 @@ void in_while()
 {
     if (is_on == 1)
     {
-        BSP::Motor::DM::Motor4310.On(&hcan2, 1);
+        BSP::Motor::BM::MotorP1010B.On(&hcan1);
         HAL_Delay(10);
 
         is_on = false;
     }
     if (is_on == 2)
     {
-        BSP::Motor::DM::Motor4310.Off(&hcan2, 1);
+        BSP::Motor::BM::MotorP1010B.OFF(&hcan1);
         HAL_Delay(10);
 
         is_on = false;
     }
 
-    BSP::Motor::DM::Motor4310.ctrl_Motor(&hcan2, 1, 0, 0, kp, kd, vel);
+    pid_out = kp * (add_angle - BSP::Motor::BM::MotorP1010B.getVelocityRads(1));
+    rad += BSP::Motor::BM::MotorP1010B.getVelocityRads(1) * 0.002;
+    BSP::Motor::BM::MotorP1010B.setCAN(vel, 1);
+    BSP::Motor::BM::MotorP1010B.setCAN(pid_out, 2);
+    BSP::Motor::BM::MotorP1010B.setCAN(vel, 3);
+    BSP::Motor::BM::MotorP1010B.setCAN(vel, 4);
+
+    BSP::Motor::BM::MotorP1010B.sendCAN(&hcan1, 0);
     HAL_Delay(1);
 }
 
@@ -52,4 +63,5 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     // add_angle += CAN::Motor::Dji::Motor2006.getVelocityRads(2) * 0.001;
 
     BSP::Motor::DM::Motor4310.Parse(RxHeader, RxHeaderData);
+    BSP::Motor::BM::MotorP1010B.Parse(RxHeader, RxHeaderData);
 }

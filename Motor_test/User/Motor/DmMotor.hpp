@@ -1,7 +1,21 @@
-#include "DjiMotor.hpp"
+#include "MotorBase.hpp"
 
 namespace BSP::Motor::DM
 {
+
+enum class DmRun
+{
+    NONE = 0,
+    RUN_ON = 1,
+    RUN_OFF = 2
+};
+
+enum class DmState
+{
+    ON,
+    OFF
+};
+
 // 参数结构体定义
 struct Parameters
 {
@@ -72,6 +86,21 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         }
     }
 
+    // 构造函数带参数计算
+    /**
+     * @brief Construct a new Parameters object
+     *
+     * @param pmin 位置 最小值
+     * @param pmax 位置 最大值
+     * @param vmin 速度 最小值
+     * @param vmax 速度 最大值
+     * @param tmin 力矩 最小值
+     * @param tmax 力矩 最大值
+     * @param kpmin Kp 最小值
+     * @param kpmax Kp 最大值
+     * @param kdmin Kd 最小值
+     * @param kdmax Kd 最大值
+     */
     Parameters CreateParams(float pmin, float pmax, float vmin, float vmax, float tmin, float tmax, float kpmin,
                             float kpmax, float kdmin, float kdmax) const
     {
@@ -95,21 +124,8 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         return (int)((x - offset) * ((float)((1 << bits) - 1)) / span);
     }
 
-    uint16_t __builtin_bswap12(uint16_t value)
-    {
-        // 步骤 1: 提取原始字节中的位
-        uint8_t high_byte = (value >> 8) & 0x0F; // 高 4 位（原低端的高 4 位）
-        uint8_t low_byte = value & 0xFF;         // 低 8 位（原低端的低 8 位）
-
-        // 步骤 2: 重新组合字节（交换高低位）
-        uint16_t swapped = (low_byte << 4) | high_byte;
-
-        // 步骤 3: 确保结果在 12-bit 范围内
-        return swapped & 0x0FFF;
-    }
-
-    // 定义参数生成方法的虚函数
-    virtual Parameters GetParameters() = 0; // 纯虚函数要求子类必须实现
+    // // 定义参数生成方法的虚函数
+    // virtual Parameters GetParameters() = 0; // 纯虚函数要求子类必须实现
     /**
      * @brief 将反馈数据转换为国际单位
      *
@@ -117,7 +133,7 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
      */
     void Configure(size_t i)
     {
-        const auto &params = GetParameters();
+        const auto &params = params_;
 
         this->unit_data_[i].angle_Deg = this->unit_data_[i].angle_Rad * params_.rad_to_deg;
 
@@ -207,7 +223,7 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         this->send_data[6] = ((kd_tmp & 0xF) << 4) | (tor_tmp >> 8);
         this->send_data[7] = tor_tmp;
 
-        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
+        CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX1);
     }
 
     /**
@@ -253,6 +269,7 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         *(uint64_t *)(&send_data[0]) = 0xFCFFFFFFFFFFFFFF;
 
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
+        state = DmRun::RUN_ON;
     }
 
     /**
@@ -265,6 +282,7 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     {
         *(uint64_t *)(&send_data[0]) = 0xFDFFFFFFFFFFFFFF;
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
+        state = DmRun::RUN_OFF;
     }
 
     /**
@@ -311,16 +329,18 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
     DMMotorfeedback feedback_[N]; // 国际单位数据
     Parameters params_;           // 转国际单位参数列表
     uint8_t send_data[8];
+
+    DmRun state = DmRun::RUN_OFF;
 };
 
 template <uint8_t N> class J4310 : public DMMotorBase<N>
 {
   private:
-    // 定义参数生成方法
-    Parameters GetParameters() override
-    {
-        return DMMotorBase<N>::CreateParams(-12.56, 12.56, -30, 30, -10, 10, 0.0, 500, 0.0, 5.0);
-    }
+    // // 定义参数生成方法
+    // Parameters GetParameters() override
+    // {
+    //     return DMMotorBase<N>::CreateParams(-12.56, 12.56, -30, 30, -10, 10, 0.0, 500, 0.0, 5.0);
+    // }
 
   public:
     // 子类构造时传递参数
@@ -331,7 +351,7 @@ template <uint8_t N> class J4310 : public DMMotorBase<N>
      * @param ids 电机ID列表
      */
     J4310(uint16_t Init_id, const uint8_t (&ids)[N], const uint32_t (&send_idxs_)[N])
-        : DMMotorBase<N>(Init_id, ids, send_idxs_, GetParameters())
+        : DMMotorBase<N>(Init_id, ids, send_idxs_, Parameters(-12.56, 12.56, -30, 30, -10, 10, 0.0, 500, 0.0, 5.0))
     {
     }
 };
@@ -342,6 +362,6 @@ template <uint8_t N> class J4310 : public DMMotorBase<N>
  * 第二个是电机接收ID列表
  * 第三个是电机发送ID列表
  */
-J4310<1> Motor4310(0x00, {4}, {8});
+inline J4310<1> Motor4310(0x00, {2}, {1});
 
-} // namespace CAN::Motor::DM
+} // namespace BSP::Motor::DM
