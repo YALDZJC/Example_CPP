@@ -14,6 +14,14 @@ Motor_test/MDK-ARM/Motor_test/
 Motor_test/MDK-ARM/*.uvoptx
 Motor_test/MDK-ARM/*.uvguix.*
 
+DWT_test/MDK-ARM/DWT_test/
+DWT_test/MDK-ARM/DWT_test_EIDE/
+DWT_test/MDKARM/build/
+DWT_test/MDKARM/Eide/
+DWT_test/MDK-ARM/DWT_test/
+DWT_test/MDK-ARM/*.uvoptx
+DWT_test/MDK-ARM/*.uvguix.*
+
 .vs/
 .vscode/
 CppProperties.json

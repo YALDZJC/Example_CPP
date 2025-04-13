@@ -55,7 +55,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxHeaderData);
 
-    // CAN::Motor::Dji::Motor2006.Parse(RxHeader, RxHeaderData);
+    BSP::Motor::Dji::Motor3508.Parse(RxHeader, RxHeaderData);
 
     // CAN::Motor::Dji::Motor2006.setCAN(vel, 2);
     // CAN::Motor::Dji::Motor2006.sendCAN(hcan,0x200, 0);

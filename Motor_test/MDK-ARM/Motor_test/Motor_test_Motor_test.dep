@@ -853,7 +853,7 @@ I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h)(0x66FB9B26)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h)(0x66FB9B26)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h)(0x66FB9B26)
 F (../Middlewares/ST/ARM/DSP/Lib/arm_cortexM4lf_math.lib)(0x6683FCAE)()
-F (..\User\CallBack.cpp)(0x67EB8D8A)(-xc++ -std=c++17 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -Werror -funsigned-char -fshort-enums -fshort-wchar -fno-exceptions-gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/ARM/DSP/Inc -I ../User-I./RTE/_Motor_test-IC:/Users/Administrator.DESKTOP-IAACAVF/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/Administrator.DESKTOP-IAACAVF/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor_test/callback.o -MD)
+F (..\User\CallBack.cpp)(0x67FBC926)(-xc++ -std=c++17 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -Werror -funsigned-char -fshort-enums -fshort-wchar -fno-exceptions-gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/ARM/DSP/Inc -I ../User-I./RTE/_Motor_test-IC:/Users/Administrator.DESKTOP-IAACAVF/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/Administrator.DESKTOP-IAACAVF/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor_test/callback.o -MD)
 I (..\User\CallBack.hpp)(0x67B81395)
 I (..\Core\Inc\can.h)(0x67B04F82)
 I (..\Core\Inc\main.h)(0x67B04F83)
@@ -893,7 +893,7 @@ I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h)(0x66FB9B26)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h)(0x66FB9B26)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h)(0x66FB9B26)
 I (..\Core\Inc\usart.h)(0x67B04F82)
-I (..\User\..\User\Motor\BMMotor.hpp)(0x67EB8C85)
+I (..\User\..\User\Motor\BMMotor.hpp)(0x67FBC8AE)
 I (..\User\..\User\Motor\MotorBase.hpp)(0x67EB67F4)
 I (..\User\..\User\Motor\..\Bsp_Can.hpp)(0x67B73E74)
 I (..\User\..\User\Motor\..\StaticTime.hpp)(0x67EB66B3)
@@ -1072,11 +1072,11 @@ I (D:\Keil5\ARM\ARMCLANG\include\libcxx\__chrono\high_resolution_clock.h)(0x6252
 I (D:\Keil5\ARM\ARMCLANG\include\libcxx\__chrono\steady_clock.h)(0x625260C0)
 I (D:\Keil5\ARM\ARMCLANG\include\libcxx\__thread\timed_backoff_policy.h)(0x625260D4)
 I (D:\Keil5\ARM\ARMCLANG\include\libcxx\__memory\temporary_buffer.h)(0x625260A6)
-I (..\User\..\User\Motor\DjiMotor.hpp)(0x67EB714C)
+I (..\User\..\User\Motor\DjiMotor.hpp)(0x67FBC8C1)
 I (..\User\..\User\Motor\DmMotor.hpp)(0x67EB6778)
 I (..\User\BSP_Can.hpp)(0x67B73E74)
 F (..\User\Bsp_Can.hpp)(0x67B73E74)()
-F (..\User\Motor\BMMotor.hpp)(0x67EB8C85)()
-F (..\User\Motor\DjiMotor.hpp)(0x67EB714C)()
+F (..\User\Motor\BMMotor.hpp)(0x67FBC8AE)()
+F (..\User\Motor\DjiMotor.hpp)(0x67FBC8C1)()
 F (..\User\Motor\DmMotor.hpp)(0x67EB6778)()
 F (..\User\Motor\MotorBase.hpp)(0x67EB67F4)()

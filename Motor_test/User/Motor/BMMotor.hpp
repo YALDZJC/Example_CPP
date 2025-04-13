@@ -160,6 +160,18 @@ template <uint8_t N> class BMMotorBase : public MotorBase<N>
         CAN::BSP::Can_Send(hcan, 0x38, msd.Data, CAN_TX_MAILBOX2);
     }
 
+//    /**
+//     * @brief 使能BM关节电机,本末电机的使能ID为0x38
+//     *
+//     * @param hcan 电机的can句柄
+//     */
+//    void OFF(CAN_HandleTypeDef *hcan)
+//    {
+//        *(uint64_t *)(&msd.Data[0]) = 0x0001000000000000;
+
+//        CAN::BSP::Can_Send(hcan, 0x38, msd.Data, CAN_TX_MAILBOX2);
+//    }
+
   protected:
     struct alignas(uint64_t) BMMotorfeedback
     {
