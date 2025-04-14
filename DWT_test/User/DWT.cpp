@@ -1,103 +1,99 @@
-#include "../User/DWT.hpp"
+#include "DWT.hpp"
+#include "main.h"
+
+namespace BSP
+{
+// 构造函数
+DWTimer::DWTimer(uint32_t CPU_mHz) : CPU_Freq_mHz(CPU_mHz), CYCCNT_LAST(0), CYCCNT_RountCount(0), CYCCNT64(0)
+{
+    Init();
+}
 
 void DWTimer::Init()
 {
     // 使能DWT外设
     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
 
-    // DWT CYCCNT寄存器计数清0
-    DWT->CYCCNT = (uint32_t)0u;
+    // 清零CYCCNT寄存器
+    DWT->CYCCNT = 0;
 
-    // 使能Cortex-M DWT CYCCNT寄存器
+    // 使能CYCCNT寄存器
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 
+    // 初始化CPU频率相关参数
     CPU_FREQ_Hz = CPU_Freq_mHz * 1000000;
     CPU_FREQ_Hz_ms = CPU_FREQ_Hz / 1000;
     CPU_FREQ_Hz_us = CPU_FREQ_Hz / 1000000;
-    CYCCNT_RountCount = 0;
 }
-float DWTimer::GetDeltaT(void)
+
+float DWTimer::GetDeltaT(uint32_t *cnt_last)
 {
-    volatile uint32_t cnt_now = DWT->CYCCNT;
-    float dt = ((uint32_t)(cnt_now - cnt_last)) / ((float)(CPU_FREQ_Hz));
-    cnt_last = cnt_now;
+    uint32_t cnt_now = DWT->CYCCNT;
+    float dt = (cnt_now - *cnt_last) / static_cast<float>(CPU_FREQ_Hz);
+    *cnt_last = cnt_now;
 
-    DWT_CNT_Update();
-
+    UpdateCYCCNT();
     return dt;
 }
 
-double DWTimer::DWT_GetDeltaT64(void)
+double DWTimer::GetDeltaT64(uint32_t *cnt_last)
 {
-    volatile uint32_t cnt_now = DWT->CYCCNT;
-    double dt = ((uint32_t)(cnt_now - cnt_last)) / ((double)(CPU_FREQ_Hz));
-    cnt_last = cnt_now;
+    uint32_t cnt_now = DWT->CYCCNT;
+    double dt = (cnt_now - *cnt_last) / static_cast<double>(CPU_FREQ_Hz);
+    *cnt_last = cnt_now;
 
-    DWT_CNT_Update();
-
+    UpdateCYCCNT();
     return dt;
 }
 
-void DWTimer::DWT_SysTimeUpdate(void)
+void DWTimer::UpdateCYCCNT()
 {
-    volatile uint32_t cnt_now = DWT->CYCCNT;
-    static uint64_t CNT_TEMP1, CNT_TEMP2, CNT_TEMP3;
+    uint32_t cnt_now = DWT->CYCCNT;
 
-    DWT_CNT_Update();
+    if (cnt_now < CYCCNT_LAST.load())
+        CYCCNT_RountCount++;
 
-    CYCCNT64 = (uint64_t)CYCCNT_RountCount * (uint64_t)UINT32_MAX + (uint64_t)cnt_now;
-    CNT_TEMP1 = CYCCNT64 / CPU_FREQ_Hz;
-    CNT_TEMP2 = CYCCNT64 - CNT_TEMP1 * CPU_FREQ_Hz;
-    SysTime.s = CNT_TEMP1;
-    SysTime.ms = CNT_TEMP2 / CPU_FREQ_Hz_ms;
-    CNT_TEMP3 = CNT_TEMP2 - SysTime.ms * CPU_FREQ_Hz_ms;
-    SysTime.us = CNT_TEMP3 / CPU_FREQ_Hz_us;
+    CYCCNT_LAST.store(cnt_now);
 }
 
-float DWTimer::DWT_GetTimeline_s(void)
+void DWTimer::UpdateSysTime()
 {
-    DWT_SysTimeUpdate();
+    uint32_t cnt_now = DWT->CYCCNT;
+    UpdateCYCCNT();
 
-    float DWT_Timelinef32 = SysTime.s + SysTime.ms * 0.001f + SysTime.us * 0.000001f;
+    CYCCNT64 = static_cast<uint64_t>(CYCCNT_RountCount.load()) * std::numeric_limits<uint32_t>::max() + cnt_now;
 
-    return DWT_Timelinef32;
+    SysTime.seconds = CYCCNT64 / CPU_FREQ_Hz;
+    uint64_t remainder = CYCCNT64 % CPU_FREQ_Hz;
+    SysTime.milliseconds = remainder / CPU_FREQ_Hz_ms;
+    SysTime.microseconds = (remainder % CPU_FREQ_Hz_ms) / CPU_FREQ_Hz_us;
 }
 
-float DWTimer::DWT_GetTimeline_ms(void)
+float DWTimer::GetTimeline_s()
 {
-    DWT_SysTimeUpdate();
-
-    float DWT_Timelinef32 = SysTime.s * 1000 + SysTime.ms + SysTime.us * 0.001f;
-
-    return DWT_Timelinef32;
+    UpdateSysTime();
+    return SysTime.seconds + SysTime.milliseconds * 0.001f + SysTime.microseconds * 0.000001f;
 }
 
-uint64_t DWTimer::DWT_GetTimeline_us(void)
+float DWTimer::GetTimeline_ms()
 {
-    DWT_SysTimeUpdate();
-
-    uint64_t DWT_Timelinef32 = SysTime.s * 1000000 + SysTime.ms * 1000 + SysTime.us;
-
-    return DWT_Timelinef32;
+    UpdateSysTime();
+    return SysTime.seconds * 1000 + SysTime.milliseconds + SysTime.microseconds * 0.001f;
 }
 
-void DWTimer::DWT_CNT_Update()
+uint64_t DWTimer::GetTimeline_us()
 {
-    volatile uint32_t cnt_now = DWT->CYCCNT;
-
-    if (cnt_now < CYCCNT_LAST)
-        CYCCNT_RountCount++; // 溢出
-
-    CYCCNT_LAST = cnt_now;
+    UpdateSysTime();
+    return SysTime.seconds * 1000000 + SysTime.milliseconds * 1000 + SysTime.microseconds;
 }
 
-void DWTimer::DWT_Delay(float Delay)
+void DWTimer::Delay(float seconds)
 {
     uint32_t tickstart = DWT->CYCCNT;
-    float wait = Delay;
+    uint32_t wait_cycles = static_cast<uint32_t>(seconds * CPU_FREQ_Hz);
 
-    while ((DWT->CYCCNT - tickstart) < wait * (float)CPU_FREQ_Hz)
+    while ((DWT->CYCCNT - tickstart) < wait_cycles)
     {
     }
 }
-
+}
