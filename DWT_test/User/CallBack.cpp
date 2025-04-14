@@ -1,12 +1,11 @@
 #include "CallBack.hpp"
 #include "DWT.hpp"
-#include "dwt_test.h"
 #include "tim.h"
 
-double ins_dt;
+double callbcak_dt;
 double while_dt;
 
-uint32_t last_count = 0;
+uint32_t callback_count = 0;
 uint32_t while_count = 0;
 
 void Init()
@@ -21,7 +20,7 @@ void in_while()
     auto &timer = BSP::DWTimer::GetInstance();
     while_dt = timer.GetDeltaT(&while_count);
 
-    HAL_Delay(1);
+    timer.Delay(0.0001);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
@@ -29,9 +28,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     /* USER CODE BEGIN Callback 1 */
     if (htim->Instance == TIM7)
     {
-        // 获取当前系统时间
-        auto &timer = BSP::DWTimer::GetInstance();
-        ins_dt = timer.GetDeltaT(&last_count);
+        // // 获取当前系统时间
+        // auto &timer = BSP::DWTimer::GetInstance();
+        // callbcak_dt = timer.GetDeltaT(&callback_count);
     }
     /* USER CODE END Callback 1 */
 }
