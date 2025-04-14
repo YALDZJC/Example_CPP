@@ -77,6 +77,10 @@ class DWTimer
      */
     void Init();
 
+    /**
+     * @brief 更新sys周期数，将计数器转化为时间单位
+     *
+     */
     void UpdateSysTime();
 
     /**
