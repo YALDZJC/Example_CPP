@@ -1,62 +1,47 @@
 // dwtimer.hpp
 #pragma once
-#include <cstdint>
-#include <limits>
+
 #include "main.h"
 #include "stdint.h"
+#include <cstdint>
+#include <limits>
+
 class DWTimer
 {
   public:
-    struct Time
+    DWTimer(uint32_t CPU_mHz) : CPU_Freq_mHz(CPU_mHz)
     {
-        uint32_t seconds;
-        uint16_t milliseconds;
-        uint16_t microseconds;
-    };
-
-    // 删除拷贝构造函数和赋值操作符
-    DWTimer(const DWTimer &) = delete;
-    DWTimer &operator=(const DWTimer &) = delete;
-
-    // 获取单例实例
-    static DWTimer &Instance()
-    {
-        static DWTimer instance;
-        return instance;
+        Init();
     }
 
-    // 初始化计时器（CPU主频，单位MHz）
-    void Initialize(uint32_t cpu_freq_mhz);
+    float GetDeltaT();
+    void DWT_CNT_Update(void);
+    double DWT_GetDeltaT64();
+    void DWT_SysTimeUpdate(void);
+    float DWT_GetTimeline_s(void);
 
-    // 获取时间差（秒）
-    float DeltaSec(uint32_t &last_count);
-    double DeltaSec64(uint32_t &last_count);
-
-    // 获取系统时间
-    Time SystemTime() const;
-    float SystemTimeSec();
-    float SystemTimeMillisec();
-    uint64_t SystemTimeMicrosec();
-
-    // 延时功能
-    void DelaySec(float seconds);
-    void DelayMillisec(uint32_t milliseconds);
-
-    // 当前周期计数
-    uint32_t CycleCount() const;
+    float DWT_GetTimeline_ms(void);
+    uint64_t DWT_GetTimeline_us(void);
+    void DWT_Delay(float Delay);
 
   private:
-    DWTimer() = default; // 私有构造函数
+    void Init();
 
-    void UpdateCycleCounters();
-    void UpdateSystemTime();
+    typedef struct
+    {
+        uint32_t s;
+        uint16_t ms;
+        uint16_t us;
+    } DWT_Time;
 
-    uint32_t cpu_freq_hz_ = 0;
-    uint32_t cpu_freq_khz_ = 0;
-    uint32_t cpu_freq_mhz_ = 0;
+    uint32_t CPU_Freq_mHz;
+    uint32_t cnt_last;
 
-    mutable uint32_t cycle_rounds_ = 0;
-    mutable uint32_t last_cycle_count_ = 0;
-    mutable Time system_time_ = {0, 0, 0};
+    DWT_Time SysTime;
+    uint32_t CPU_FREQ_Hz, CPU_FREQ_Hz_ms, CPU_FREQ_Hz_us;
+    uint32_t CYCCNT_RountCount;
+    uint32_t CYCCNT_LAST;
+    uint64_t CYCCNT64;
 };
 
+inline DWTimer DWT_Timer(168);

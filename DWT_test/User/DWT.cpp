@@ -1,106 +1,103 @@
-// dwtimer.cpp
-#include "DWT.hpp"
+#include "../User/DWT.hpp"
 
-void DWTimer::Initialize(uint32_t cpu_freq_mhz)
+void DWTimer::Init()
 {
-    // 启用DWT跟踪
+    // 使能DWT外设
     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
 
-    // 重置周期计数器
-    DWT->CYCCNT = 0;
+    // DWT CYCCNT寄存器计数清0
+    DWT->CYCCNT = (uint32_t)0u;
 
-    // 启用周期计数器
+    // 使能Cortex-M DWT CYCCNT寄存器
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 
-    cpu_freq_hz_ = cpu_freq_mhz * 1'000'000;
-    cpu_freq_khz_ = cpu_freq_hz_ / 1'000;
-    cpu_freq_mhz_ = cpu_freq_khz_ / 1'000;
+    CPU_FREQ_Hz = CPU_Freq_mHz * 1000000;
+    CPU_FREQ_Hz_ms = CPU_FREQ_Hz / 1000;
+    CPU_FREQ_Hz_us = CPU_FREQ_Hz / 1000000;
+    CYCCNT_RountCount = 0;
+}
+float DWTimer::GetDeltaT(void)
+{
+    volatile uint32_t cnt_now = DWT->CYCCNT;
+    float dt = ((uint32_t)(cnt_now - cnt_last)) / ((float)(CPU_FREQ_Hz));
+    cnt_last = cnt_now;
+
+    DWT_CNT_Update();
+
+    return dt;
 }
 
-uint32_t DWTimer::CycleCount() const
+double DWTimer::DWT_GetDeltaT64(void)
 {
-    return DWT->CYCCNT;
+    volatile uint32_t cnt_now = DWT->CYCCNT;
+    double dt = ((uint32_t)(cnt_now - cnt_last)) / ((double)(CPU_FREQ_Hz));
+    cnt_last = cnt_now;
+
+    DWT_CNT_Update();
+
+    return dt;
 }
 
-void DWTimer::UpdateCycleCounters()
+void DWTimer::DWT_SysTimeUpdate(void)
 {
-    const uint32_t current = CycleCount();
-    if (current < last_cycle_count_)
+    volatile uint32_t cnt_now = DWT->CYCCNT;
+    static uint64_t CNT_TEMP1, CNT_TEMP2, CNT_TEMP3;
+
+    DWT_CNT_Update();
+
+    CYCCNT64 = (uint64_t)CYCCNT_RountCount * (uint64_t)UINT32_MAX + (uint64_t)cnt_now;
+    CNT_TEMP1 = CYCCNT64 / CPU_FREQ_Hz;
+    CNT_TEMP2 = CYCCNT64 - CNT_TEMP1 * CPU_FREQ_Hz;
+    SysTime.s = CNT_TEMP1;
+    SysTime.ms = CNT_TEMP2 / CPU_FREQ_Hz_ms;
+    CNT_TEMP3 = CNT_TEMP2 - SysTime.ms * CPU_FREQ_Hz_ms;
+    SysTime.us = CNT_TEMP3 / CPU_FREQ_Hz_us;
+}
+
+float DWTimer::DWT_GetTimeline_s(void)
+{
+    DWT_SysTimeUpdate();
+
+    float DWT_Timelinef32 = SysTime.s + SysTime.ms * 0.001f + SysTime.us * 0.000001f;
+
+    return DWT_Timelinef32;
+}
+
+float DWTimer::DWT_GetTimeline_ms(void)
+{
+    DWT_SysTimeUpdate();
+
+    float DWT_Timelinef32 = SysTime.s * 1000 + SysTime.ms + SysTime.us * 0.001f;
+
+    return DWT_Timelinef32;
+}
+
+uint64_t DWTimer::DWT_GetTimeline_us(void)
+{
+    DWT_SysTimeUpdate();
+
+    uint64_t DWT_Timelinef32 = SysTime.s * 1000000 + SysTime.ms * 1000 + SysTime.us;
+
+    return DWT_Timelinef32;
+}
+
+void DWTimer::DWT_CNT_Update()
+{
+    volatile uint32_t cnt_now = DWT->CYCCNT;
+
+    if (cnt_now < CYCCNT_LAST)
+        CYCCNT_RountCount++; // 溢出
+
+    CYCCNT_LAST = cnt_now;
+}
+
+void DWTimer::DWT_Delay(float Delay)
+{
+    uint32_t tickstart = DWT->CYCCNT;
+    float wait = Delay;
+
+    while ((DWT->CYCCNT - tickstart) < wait * (float)CPU_FREQ_Hz)
     {
-        ++cycle_rounds_;
     }
-    last_cycle_count_ = current;
 }
 
-void DWTimer::UpdateSystemTime()
-{
-    UpdateCycleCounters();
-    const uint64_t total_cycles =
-        static_cast<uint64_t>(cycle_rounds_) * std::numeric_limits<uint32_t>::max() + CycleCount();
-
-    system_time_.seconds = total_cycles / cpu_freq_hz_;
-    const uint64_t remainder = total_cycles % cpu_freq_hz_;
-
-    system_time_.milliseconds = remainder / cpu_freq_khz_;
-    system_time_.microseconds = (remainder % cpu_freq_khz_) / cpu_freq_mhz_;
-}
-
-DWTimer::Time DWTimer::SystemTime() const
-{
-    const_cast<DWTimer *>(this)->UpdateSystemTime();
-    return system_time_;
-}
-
-float DWTimer::SystemTimeSec()
-{
-    UpdateSystemTime();
-    return static_cast<float>(system_time_.seconds) + system_time_.milliseconds * 1e-3f +
-           system_time_.microseconds * 1e-6f;
-}
-
-float DWTimer::SystemTimeMillisec()
-{
-    UpdateSystemTime();
-    return system_time_.seconds * 1e3f + system_time_.milliseconds + system_time_.microseconds * 1e-3f;
-}
-
-uint64_t DWTimer::SystemTimeMicrosec()
-{
-    UpdateSystemTime();
-    return static_cast<uint64_t>(system_time_.seconds) * 1'000'000ULL + system_time_.milliseconds * 1'000ULL +
-           system_time_.microseconds;
-}
-
-float DWTimer::DeltaSec(uint32_t &last_count)
-{
-    const uint32_t current = CycleCount();
-    const float delta = static_cast<float>(current - last_count) / cpu_freq_hz_;
-    last_count = current;
-    UpdateCycleCounters();
-    return delta;
-}
-
-double DWTimer::DeltaSec64(uint32_t &last_count)
-{
-    const uint32_t current = CycleCount();
-    const double delta = static_cast<double>(current - last_count) / cpu_freq_hz_;
-    last_count = current;
-    UpdateCycleCounters();
-    return delta;
-}
-
-void DWTimer::DelaySec(float seconds)
-{
-    const uint32_t start = CycleCount();
-    const uint32_t wait_cycles = static_cast<uint32_t>(seconds * cpu_freq_hz_);
-    while ((CycleCount() - start) < wait_cycles)
-        ;
-}
-
-void DWTimer::DelayMillisec(uint32_t milliseconds)
-{
-    const uint32_t start = CycleCount();
-    const uint32_t wait_cycles = milliseconds * cpu_freq_khz_;
-    while ((CycleCount() - start) < wait_cycles)
-        ;
-}
