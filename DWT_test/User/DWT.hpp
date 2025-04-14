@@ -22,29 +22,67 @@ class DWTimer
     DWTimer(const DWTimer &) = delete;
     DWTimer &operator=(const DWTimer &) = delete;
 
-    // 时间差计算
+    /**
+     * @brief 获取时间差
+     *
+     * @param cnt_last
+     * @return float
+     */
     float GetDeltaT(uint32_t *cnt_last);
+
+    /**
+     * @brief 获取时间差64位
+     *
+     * @param cnt_last
+     * @return double
+     */
     double GetDeltaT64(uint32_t *cnt_last);
 
-    // 获取时间轴
+    /**
+     * @brief 获取时间轴长度（秒）
+     *
+     * @return float
+     */
     float GetTimeline_s();
+
+    /**
+     * @brief 获取时间轴长度（毫秒）
+     *
+     * @return float
+     */
     float GetTimeline_ms();
+
+    /**
+     * @brief 获取时间轴长度（微秒）
+     *
+     * @return uint64_t
+     */
     uint64_t GetTimeline_us();
 
-    // 延时函数
+    /**
+     * @brief 延时函数
+     *
+     * @param seconds 单位/s
+     */
+
     void Delay(float seconds);
 
   private:
     // 构造函数私有化
     explicit DWTimer(uint32_t CPU_mHz);
 
-    // 初始化DWT外设
+    /**
+     * @brief 初始化函数
+     *
+     */
     void Init();
 
-    // 更新系统时间
     void UpdateSysTime();
 
-    // 更新CYCCNT计数器
+    /**
+     * @brief 更新CYCCNT计数器
+     *
+     */
     void UpdateCYCCNT();
 
     // 时间结构体
@@ -68,4 +106,4 @@ class DWTimer
     DWT_Time SysTime;  // 系统时间
 };
 
-} // namespace BSP::DWT
+} // namespace BSP

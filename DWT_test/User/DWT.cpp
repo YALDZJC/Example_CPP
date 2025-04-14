@@ -4,6 +4,12 @@
 namespace BSP
 {
 // 构造函数
+
+/**
+ * @brief Construct a new DWTimer::DWTimer object
+ *
+ * @param CPU_mHz 单片机主频
+ */
 DWTimer::DWTimer(uint32_t CPU_mHz) : CPU_Freq_mHz(CPU_mHz), CYCCNT_LAST(0), CYCCNT_RountCount(0), CYCCNT64(0)
 {
     Init();
@@ -26,6 +32,7 @@ void DWTimer::Init()
     CPU_FREQ_Hz_us = CPU_FREQ_Hz / 1000000;
 }
 
+
 float DWTimer::GetDeltaT(uint32_t *cnt_last)
 {
     uint32_t cnt_now = DWT->CYCCNT;
@@ -35,6 +42,7 @@ float DWTimer::GetDeltaT(uint32_t *cnt_last)
     UpdateCYCCNT();
     return dt;
 }
+
 
 double DWTimer::GetDeltaT64(uint32_t *cnt_last)
 {
@@ -46,6 +54,7 @@ double DWTimer::GetDeltaT64(uint32_t *cnt_last)
     return dt;
 }
 
+
 void DWTimer::UpdateCYCCNT()
 {
     uint32_t cnt_now = DWT->CYCCNT;
@@ -55,6 +64,7 @@ void DWTimer::UpdateCYCCNT()
 
     CYCCNT_LAST.store(cnt_now);
 }
+
 
 void DWTimer::UpdateSysTime()
 {
@@ -75,11 +85,13 @@ float DWTimer::GetTimeline_s()
     return SysTime.seconds + SysTime.milliseconds * 0.001f + SysTime.microseconds * 0.000001f;
 }
 
+
 float DWTimer::GetTimeline_ms()
 {
     UpdateSysTime();
     return SysTime.seconds * 1000 + SysTime.milliseconds + SysTime.microseconds * 0.001f;
 }
+
 
 uint64_t DWTimer::GetTimeline_us()
 {
@@ -96,4 +108,4 @@ void DWTimer::Delay(float seconds)
     {
     }
 }
-}
+} // namespace BSP
