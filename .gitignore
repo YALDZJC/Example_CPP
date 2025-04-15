@@ -22,6 +22,14 @@ DWT_test/MDK-ARM/DWT_test/
 DWT_test/MDK-ARM/*.uvoptx
 DWT_test/MDK-ARM/*.uvguix.*
 
+Shoot_test/MDK-ARM/Shoot_test/
+Shoot_test/MDK-ARM/.eide/
+Shoot_test/MDKARM/build/
+Shoot_test/MDKARM/Eide/
+Shoot_test/MDK-ARM/Shoot_test/
+Shoot_test/MDK-ARM/*.uvoptx
+Shoot_test/MDK-ARM/*.uvguix.*
+
 .vs/
 .vscode/
 CppProperties.json
