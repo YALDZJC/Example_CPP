@@ -33,7 +33,7 @@ Shoot_test/MDK-ARM/*.uvguix.*
 RemoteMini_test/MDK-ARM/RemoteMini_test/
 RemoteMini_test/MDK-ARM/RemoteMini_test/
 RemoteMini_test/MDKARM/build/
-RemoteMini_test\MDK-ARM\DBUS_test_EIDE\
+RemoteMini_test\MDK-ARM\.eide\
 RemoteMini_test/MDK-ARM/RemoteMini_test/
 RemoteMini_test/MDK-ARM/*.uvoptx
 RemoteMini_test/MDK-ARM/*.uvguix.*

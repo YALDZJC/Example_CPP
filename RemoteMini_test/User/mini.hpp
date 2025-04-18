@@ -5,7 +5,7 @@
 #define ClickerHuart huart3
 #define REMOTE_MAX_LEN 18
 
-namespace Remote
+namespace BSP::Remote
 {
 class Dr16
 {
@@ -71,17 +71,27 @@ class Dr16
     void ClearORE(UART_HandleTypeDef *huart, uint8_t *pData, int Size);
 
   private: // 私有成员变量
+    struct __attribute__((packed)) Dr16DataPart0
+    {
+        /* data */
+        uint8_t header_low;  // 0
+        uint8_t header_high; // 8
+    };
+
     struct __attribute__((packed)) Dr16DataPart1
     {
-        uint64_t joystick_channel0 : 11;
-        uint64_t joystick_channel1 : 11;
-        uint64_t joystick_channel2 : 11;
-        uint64_t joystick_channel3 : 11;
+        uint64_t joystick_channel0 : 11; // 16
+        uint64_t joystick_channel1 : 11; // 27
+        uint64_t joystick_channel2 : 11; // 38
+        uint64_t joystick_channel3 : 11; // 49
 
-        uint64_t switch_right : 2;
-        uint64_t switch_left : 2;
+        uint64_t gear : 2;     // 挡位切换  60
+        uint64_t paused : 1;   // 停止按键  62
+        uint64_t fn_left : 1;  // 右侧开关  63
+        uint64_t fn_right : 1; // 右侧开关  64
 
-        uint64_t padding : 16;
+        uint64_t sw : 11;     // 65
+        uint64_t trigger : 1; // 76
     };
 
     struct __attribute__((packed)) Dr16DataPart2
@@ -115,8 +125,8 @@ class Dr16
   private:
     uint8_t pData[REMOTE_MAX_LEN];
 
-    // 数据部分part1为遥感与开关，part2为鼠标，part3为键盘
-    uint64_t data_part0_;
+    // 数据部分part0位帧头，part1为遥感与开关，part2为鼠标，part3为键盘
+    uint16_t data_part0_;
     uint64_t data_part1_;
     uint64_t data_part2_;
     uint64_t data_part3_;
@@ -205,7 +215,7 @@ class Dr16
 };
 
 extern Dr16 dr16;
-} // namespace Remote
+} // namespace BSP::Remote
 #ifdef __cplusplus
 extern "C"
 {
