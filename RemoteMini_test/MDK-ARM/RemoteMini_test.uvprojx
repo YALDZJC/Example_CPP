@@ -7,10 +7,9 @@
 
   <Targets>
     <Target>
-      <TargetName>Shoot_test</TargetName>
+      <TargetName>RemoteMini_test</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -48,8 +47,8 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>Shoot_test\</OutputDirectory>
-          <OutputName>Shoot_test</OutputName>
+          <OutputDirectory>RemoteMini_test\</OutputDirectory>
+          <OutputName>RemoteMini_test</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -558,7 +557,7 @@
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="4.3.0" condition="CMSIS Core">
         <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="4.5.0"/>
         <targetInfos>
-          <targetInfo name="Shoot_test"/>
+          <targetInfo name="RemoteMini_test"/>
         </targetInfos>
       </component>
     </components>
