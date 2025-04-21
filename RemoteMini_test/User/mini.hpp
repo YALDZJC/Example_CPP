@@ -2,15 +2,15 @@
 #include "stdint.h"
 #include "usart.h"
 
-#define ClickerHuart huart3
-#define REMOTE_MAX_LEN 18
+#define ClickerHuart huart6
+#define REMOTE_MAX_LEN 21
 
 namespace BSP::Remote
 {
-class Dr16
+class Mini
 {
   public: // 公有成员函数
-    Dr16() = default;
+    Mini() = default;
 
     // 遥控器初始化
     void Init();
@@ -28,12 +28,19 @@ class Dr16
     };
 
   public: // 公有成员变量
+    enum class Gear : uint8_t
+    {
+        UNKNOWN = 4,
+        UP = 0,
+        MIDDLE = 1,
+        DOWN = 2
+    };
+
     enum class Switch : uint8_t
     {
-        UNKNOWN = 0,
-        UP = 1,
-        DOWN = 2,
-        MIDDLE = 3
+        UNKNOWN = 2,
+        DOWN = 0,
+        UP = 1
     };
 
     struct __attribute__((packed)) Keyboard
@@ -71,43 +78,45 @@ class Dr16
     void ClearORE(UART_HandleTypeDef *huart, uint8_t *pData, int Size);
 
   private: // 私有成员变量
-    struct __attribute__((packed)) Dr16DataPart0
+    struct __attribute__((packed)) MiniDataPart0
     {
         /* data */
         uint8_t header_low;  // 0
         uint8_t header_high; // 8
     };
 
-    struct __attribute__((packed)) Dr16DataPart1
+    struct __attribute__((packed)) MiniDataPart1
     {
         uint64_t joystick_channel0 : 11; // 16
         uint64_t joystick_channel1 : 11; // 27
         uint64_t joystick_channel2 : 11; // 38
         uint64_t joystick_channel3 : 11; // 49
 
-        uint64_t gear : 2;     // 挡位切换  60
-        uint64_t paused : 1;   // 停止按键  62
-        uint64_t fn_left : 1;  // 右侧开关  63
-        uint64_t fn_right : 1; // 右侧开关  64
+        uint64_t gear : 2; // 挡位切换  60
+        bool paused : 1;   // 停止按键  62
+        bool fn_left : 1;  // 右侧开关  63
+        bool fn_right : 1; // 右侧开关  64
 
-        uint64_t sw : 11;     // 65
-        uint64_t trigger : 1; // 76
+        uint64_t sw : 11; // 65
+        bool trigger : 1; // 76
     };
 
-    struct __attribute__((packed)) Dr16DataPart2
+    struct __attribute__((packed)) MiniDataPart2
     {
-        int16_t mouse_velocity_x;
-        int16_t mouse_velocity_y;
-        int16_t mouse_velocity_z;
+        // 因为内存不连续，需要偏移 +2
+        int16_t mouse_velocity_x; // 80
+        int16_t mouse_velocity_y; // 96
+        int16_t mouse_velocity_z; // 112
 
-        bool mouse_left;
-        bool mouse_right;
+        bool mouse_left;   // 128
+        bool mouse_right;  // 130
+        bool mouse_middle; // 132
     };
 
-    struct __attribute__((packed)) Dr16DataPart3
+    struct __attribute__((packed)) MiniDataPart3
     {
-        Keyboard keyboard;
-        uint16_t unused;
+        // 内存不连续，需要偏移 +4
+        Keyboard keyboard; // 136
     };
 
     struct __attribute__((packed)) Mouse
@@ -136,8 +145,13 @@ class Dr16
     Vector joystick_left_ = Vector::zero();
     Vector mouse_vel_ = Vector::zero();
 
-    Switch switch_right_ = Switch::UNKNOWN;
-    Switch switch_left_ = Switch::UNKNOWN;
+    Vector sw_ = Vector::zero();
+
+    Gear gear_ = Gear::UNKNOWN;
+    Switch paused_ = Switch::UNKNOWN;
+    Switch fn_left_ = Switch::UNKNOWN;
+    Switch fn_right_ = Switch::UNKNOWN;
+    Switch trigger_ = Switch::UNKNOWN;
 
     Mouse mouse_ = Mouse::zero();
     Keyboard keyboard_ = Keyboard::zero();
@@ -164,6 +178,16 @@ class Dr16
     };
 
     /**
+     * @brief 获取拨杆的值
+     *
+     * @return Vector
+     */
+    Vector sw()
+    {
+        return sw_;
+    };
+
+    /**
      * @brief 获取鼠标的速度
      *
      * @return Vector
@@ -173,25 +197,50 @@ class Dr16
         return mouse_vel_;
     };
 
+    Gear gear()
+    {
+        return gear_;
+    }
+
     /**
-     * @brief 获取右侧开关的状态
+     * @brief 获取暂停按键
      *
      * @return Switch
      */
-    Switch switchRight()
+    Switch paused()
     {
-        return switch_right_;
+        return paused_;
     };
 
     /**
-     * @brief 获取左侧开关的状态
+     * @brief 获取fn_left开关的状态
      *
      * @return Switch
      */
-    Switch switchLeft()
+    Switch fnLeft()
     {
-        return switch_left_;
+        return fn_left_;
     };
+
+    /**
+     * @brief 获取fn_right开关的状态
+     *
+     * @return Switch
+     */
+    Switch fnRight()
+    {
+        return fn_right_;
+    };
+
+    /**
+     * @brief 获取扳机键状态
+     *
+     * @return Switch
+     */
+    Switch trigger()
+    {
+        return trigger_;
+    }
 
     /**
      * @brief 获取鼠标的状态
@@ -214,7 +263,6 @@ class Dr16
     }
 };
 
-extern Dr16 dr16;
 } // namespace BSP::Remote
 #ifdef __cplusplus
 extern "C"

@@ -26,6 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+void Init();
 
 /* USER CODE END Includes */
 
@@ -58,7 +59,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint8_t pData[21];
 /* USER CODE END 0 */
 
 /**
@@ -100,6 +101,7 @@ int main(void)
   MX_TIM4_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
+	Init();
 
   /* USER CODE END 2 */
 
@@ -110,6 +112,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//		HAL_UARTEx_ReceiveToIdle_DMA(&huart6, pData, sizeof(pData));
+
+//		HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
