@@ -3,7 +3,6 @@
 #include "usart.h"
 
 #define ClickerHuart huart6
-#define REMOTE_MAX_LEN 21
 
 namespace BSP::Remote
 {
@@ -92,31 +91,36 @@ class Mini
         uint64_t joystick_channel2 : 11; // 38
         uint64_t joystick_channel3 : 11; // 49
 
-        uint64_t gear : 2; // 挡位切换  60
-        bool paused : 1;   // 停止按键  62
-        bool fn_left : 1;  // 右侧开关  63
-        bool fn_right : 1; // 右侧开关  64
+        uint64_t gear : 2;     // 挡位切换  60
+        uint64_t paused : 1;   // 停止按键  62
+        uint64_t fn_left : 1;  // 右侧开关  63
+        uint64_t fn_right : 1; // 右侧开关  64
 
-        uint64_t sw : 11; // 65
-        bool trigger : 1; // 76
+        uint64_t sw : 11;     // 65
+        uint64_t trigger : 1; // 76
     };
 
     struct __attribute__((packed)) MiniDataPart2
     {
-        // 因为内存不连续，需要偏移 +2
         int16_t mouse_velocity_x; // 80
         int16_t mouse_velocity_y; // 96
         int16_t mouse_velocity_z; // 112
 
-        bool mouse_left;   // 128
-        bool mouse_right;  // 130
-        bool mouse_middle; // 132
+        uint8_t mouse_left : 2;   // 128
+        uint8_t mouse_right : 2;  // 130
+        uint8_t mouse_middle : 2; // 132
     };
 
     struct __attribute__((packed)) MiniDataPart3
     {
         // 内存不连续，需要偏移 +4
         Keyboard keyboard; // 136
+    };
+
+    struct __attribute__((packed)) MiniDataPart4
+    {
+        // 内存不连续，需要偏移 +4
+        uint16_t crc; // 136
     };
 
     struct __attribute__((packed)) Mouse
@@ -132,41 +136,48 @@ class Mini
     };
 
   private:
+    static constexpr uint8_t REMOTE_MAX_LEN = 21;
+    static constexpr uint8_t head_low = 0xA9;
+    static constexpr uint8_t head_high = 0x53;
+
     uint8_t pData[REMOTE_MAX_LEN];
 
     // 数据部分part0位帧头，part1为遥感与开关，part2为鼠标，part3为键盘
-    uint16_t data_part0_;
-    uint64_t data_part1_;
-    uint64_t data_part2_;
-    uint64_t data_part3_;
+    MiniDataPart0 part0_;
+    MiniDataPart1 part1_;
+    MiniDataPart2 part2_;
+    MiniDataPart3 part3_;
+    MiniDataPart4 part4_;
 
     // 调用zero初始化
     Vector joystick_right_ = Vector::zero();
     Vector joystick_left_ = Vector::zero();
+		Vector sw_ = Vector::zero();
+
     Vector mouse_vel_ = Vector::zero();
-
-    Vector sw_ = Vector::zero();
-
+    Mouse mouse_key_ = Mouse::zero();
+	
+    Keyboard keyboard_ = Keyboard::zero();
+		
     Gear gear_ = Gear::UNKNOWN;
     Switch paused_ = Switch::UNKNOWN;
     Switch fn_left_ = Switch::UNKNOWN;
     Switch fn_right_ = Switch::UNKNOWN;
     Switch trigger_ = Switch::UNKNOWN;
 
-    Mouse mouse_ = Mouse::zero();
-    Keyboard keyboard_ = Keyboard::zero();
 
-  public: // get方法
+
+  public:
+    // get方法
     /**
      * @brief 获取遥控器右侧摇杆的值
      *
      * @return Vector
      */
-    inline Vector remoteRight()
+    Vector remoteRight()
     {
         return joystick_right_;
     };
-
     /**
      * @brief 获取遥控器左侧摇杆的值
      *
@@ -185,16 +196,6 @@ class Mini
     Vector sw()
     {
         return sw_;
-    };
-
-    /**
-     * @brief 获取鼠标的速度
-     *
-     * @return Vector
-     */
-    Vector mouseVel()
-    {
-        return mouse_vel_;
     };
 
     Gear gear()
@@ -242,6 +243,16 @@ class Mini
         return trigger_;
     }
 
+		 /**
+     * @brief 获取鼠标的速度
+     *
+     * @return Vector
+     */
+    Vector mouseVel()
+    {
+        return mouse_vel_;
+    };
+
     /**
      * @brief 获取鼠标的状态
      *
@@ -249,7 +260,7 @@ class Mini
      */
     Mouse mouse()
     {
-        return mouse_;
+        return mouse_key_;
     }
 
     /**

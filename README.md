@@ -114,5 +114,87 @@ timer.Delay(0.0001f); // 延时 0.0001 秒
 ### 1.CPU频率设置
 
 - 在创建`DWTimer`实例时，需要指定正确的 CPU 频率（单位为 MHz）。例如：`BSP::DWTimer::GetInstance(168)` 表示 CPU 频率为 168 MHz。
-- `GetDeltaT` 和 `GetTimeline` 方法会更新内部计数器，频繁调用可能对性能产生一定影响。
 
+- `GetDeltaT` 和 `GetTimeline` 方法会更新内部计数器，频繁调用可能对性能产生一定影响。
+# Dji Mini遥控器
+
+---
+
+## 简介
+
+​	用于解析新版RM遥控器数据的c++库，由于是以Dji Mini无人机遥控器的外观，所以命名为RemoteMini
+
+> 使用部分c++17语法如嵌套namespace
+
+​	使用位域结构体,将数据直接复制进结构体,再调用`UpdateStatus`进行*归一化处理*
+
+## 文件机构
+
+```
+RemoteMini_test/
+├── User/
+│   ├── MimiRemote/
+│   │   ├── Mini.hpp      # 头文件，定义了 Mini 类及其相关数据结构
+│   │   └── Mini.cpp      # 实现文件，包含 Mini 类方法的具体实现
+│   └── CRC/              # CRC 校验相关代码
+└── README.md             # 项目说明文档
+```
+
+## 使用说明
+
+### 1. 初始化
+
+​	在程序启动时调用`Init`方法初始化串口DMA接收:
+
+```c++
+BSP::Remote::Mini remote;
+remote.Init();
+```
+
+### 2. 数据解析
+
+​	当串口受到数据后,在**HAL_UARTEx_RxEventCallback函数**中调用`Parse`方法进行数据解析:
+
+```c++
+UART_HandleTypeDef huart6; // 假设已配置好
+uint8_t data[REMOTE_MAX_LEN];
+int size = 21; // 数据长度
+
+remote.Parse(&huart6, size);
+```
+
+### 3. 获取遥控器状态
+
+​	通过`get`方法获取遥控器状态,使用方法如下
+
+#### 1. 遥感值
+
+```c++
+auto rightJoystick = remote.remoteRight(); // 右侧摇杆
+auto leftJoystick = remote.remoteLeft();   // 左侧摇杆
+```
+
+#### 2. 开关状态
+
+```c++
+auto gear = remote.gear();       // 挡位开关
+auto paused = remote.paused();   // 暂停按键
+auto fnLeft = remote.fnLeft();   // 左侧自定义按键
+auto fnRight = remote.fnRight(); // 右侧自定义按键
+auto trigger = remote.trigger(); // 扳机键
+```
+
+#### 3. 鼠标状态
+
+```c++
+auto mouseVelocity = remote.mouseVel(); // 鼠标速度
+auto mouseKeys = remote.mouse();        // 鼠标按键
+```
+
+#### 4. 键盘状态
+
+```c++
+auto keyboard = remote.keyBoard(); // 键盘按键
+```
+
+## 

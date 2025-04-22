@@ -559,15 +559,35 @@
               <FileType>5</FileType>
               <FilePath>..\User\CallBack.hpp</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Mini</GroupName>
+          <Files>
             <File>
-              <FileName>mini.cpp</FileName>
+              <FileName>Mini.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\User\mini.cpp</FilePath>
+              <FilePath>..\User\MimiRemote\Mini.cpp</FilePath>
             </File>
             <File>
-              <FileName>mini.hpp</FileName>
+              <FileName>Mini.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\User\mini.hpp</FilePath>
+              <FilePath>..\User\MimiRemote\Mini.hpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CRC</GroupName>
+          <Files>
+            <File>
+              <FileName>crc.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\CRC\crc.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>crc.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\CRC\crc.hpp</FilePath>
             </File>
           </Files>
         </Group>

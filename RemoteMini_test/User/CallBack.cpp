@@ -1,6 +1,6 @@
 #include "CallBack.hpp"
 #include "Dbus.hpp"
-#include "mini.hpp"
+#include "../User/MimiRemote/Mini.hpp"
 
 BSP::Remote::Mini remoteMini;
 
