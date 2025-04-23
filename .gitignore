@@ -38,6 +38,14 @@ RemoteMini_test/MDK-ARM/RemoteMini_test/
 RemoteMini_test/MDK-ARM/*.uvoptx
 RemoteMini_test/MDK-ARM/*.uvguix.*
 
+LH_SupCap/MDK-ARM/LH_SupCap/
+LH_SupCap/MDK-ARM/LH_SupCap/
+LH_SupCap/MDKARM/build/
+LH_SupCap\MDK-ARM\.eide\
+LH_SupCap/MDK-ARM/LH_SupCap/
+LH_SupCap/MDK-ARM/*.uvoptx
+LH_SupCap/MDK-ARM/*.uvguix.*
+
 .vs/
 .vscode/
 CppProperties.json

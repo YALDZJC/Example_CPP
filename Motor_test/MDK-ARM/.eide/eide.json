@@ -197,7 +197,9 @@
   "outDir": "build",
   "deviceName": null,
   "packDir": null,
-  "miscInfo": {},
+  "miscInfo": {
+    "uid": "37c96dbd534b2db141e21a66172a9bab"
+  },
   "targets": {
     "Motor_test": {
       "excludeList": [],
@@ -341,11 +343,11 @@
           ".cmsis/include",
           "RTE/_Motor_test"
         ],
+        "libList": [],
         "defineList": [
           "USE_HAL_DRIVER",
           "STM32F407xx"
-        ],
-        "libList": []
+        ]
       },
       "builderOptions": {
         "AC6": {
