@@ -9,10 +9,18 @@ namespace BSP::Remote
 class Mini
 {
   public: // 公有成员函数
-    Mini() = default;
+    // 禁用拷贝构造函数和赋值运算符
+    Mini(const Mini &) = delete;
+    Mini &operator=(const Mini &) = delete;
 
-    // 遥控器初始化
-    void Init();
+    // 获取单例实例
+    static Mini &getInstance()
+    {
+        static Mini instance;
+
+        return instance;
+    }
+
     // 解析数据
     void Parse(UART_HandleTypeDef *huart, int Size);
 
@@ -25,7 +33,9 @@ class Mini
 
         double x, y;
     };
-
+    
+    // 遥控器初始化
+    void Init();
   public: // 公有成员变量
     enum class Gear : uint8_t
     {
@@ -69,6 +79,9 @@ class Mini
     };
 
   private: // 私有成员函数
+    // 私有构造函数
+    Mini() = default;
+
     // 遥控器数据解析
     void SaveData(const uint8_t *pData);
     // 更新遥控器状态
@@ -136,6 +149,8 @@ class Mini
     };
 
   private:
+
+
     static constexpr uint8_t REMOTE_MAX_LEN = 21;
     static constexpr uint8_t head_low = 0xA9;
     static constexpr uint8_t head_high = 0x53;
@@ -152,20 +167,18 @@ class Mini
     // 调用zero初始化
     Vector joystick_right_ = Vector::zero();
     Vector joystick_left_ = Vector::zero();
-		Vector sw_ = Vector::zero();
+    Vector sw_ = Vector::zero();
 
     Vector mouse_vel_ = Vector::zero();
     Mouse mouse_key_ = Mouse::zero();
-	
+
     Keyboard keyboard_ = Keyboard::zero();
-		
+
     Gear gear_ = Gear::UNKNOWN;
     Switch paused_ = Switch::UNKNOWN;
     Switch fn_left_ = Switch::UNKNOWN;
     Switch fn_right_ = Switch::UNKNOWN;
     Switch trigger_ = Switch::UNKNOWN;
-
-
 
   public:
     // get方法
@@ -243,7 +256,7 @@ class Mini
         return trigger_;
     }
 
-		 /**
+    /**
      * @brief 获取鼠标的速度
      *
      * @return Vector

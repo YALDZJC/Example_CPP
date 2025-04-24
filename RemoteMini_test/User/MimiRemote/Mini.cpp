@@ -2,10 +2,6 @@
 #include "../CRC/crc.hpp"
 
 #include "memory"
-void init()
-{
-    // Remote::BSP::Mini.Init();
-}
 
 namespace BSP::Remote
 {

@@ -21,29 +21,7 @@ void Init()
 
 void in_while()
 {
-    if (is_on == 1)
-    {
-        BSP::Motor::BM::MotorP1010B.On(&hcan1);
-        HAL_Delay(10);
 
-        is_on = false;
-    }
-    if (is_on == 2)
-    {
-        BSP::Motor::BM::MotorP1010B.OFF(&hcan1);
-        HAL_Delay(10);
-
-        is_on = false;
-    }
-
-    pid_out = kp * (add_angle - BSP::Motor::BM::MotorP1010B.getVelocityRads(1));
-    rad += BSP::Motor::BM::MotorP1010B.getVelocityRads(1) * 0.002;
-    BSP::Motor::BM::MotorP1010B.setCAN(vel, 1);
-    BSP::Motor::BM::MotorP1010B.setCAN(pid_out, 2);
-    BSP::Motor::BM::MotorP1010B.setCAN(vel, 3);
-    BSP::Motor::BM::MotorP1010B.setCAN(vel, 4);
-
-    BSP::Motor::BM::MotorP1010B.sendCAN(&hcan1, 0);
     HAL_Delay(1);
 }
 
@@ -61,8 +39,4 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     // CAN::Motor::Dji::Motor2006.setCAN(vel, 2);
     // CAN::Motor::Dji::Motor2006.sendCAN(hcan,0x200, 0);
 
-    // add_angle += CAN::Motor::Dji::Motor2006.getVelocityRads(2) * 0.001;
-
-    BSP::Motor::DM::Motor4310.Parse(RxHeader, RxHeaderData);
-    BSP::Motor::BM::MotorP1010B.Parse(RxHeader, RxHeaderData);
 }

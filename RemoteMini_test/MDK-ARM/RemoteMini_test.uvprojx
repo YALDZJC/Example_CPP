@@ -592,6 +592,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Key</GroupName>
+          <Files>
+            <File>
+              <FileName>KeyBroad.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\Key\KeyBroad.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>KeyBroad.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\Key\KeyBroad.hpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>

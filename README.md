@@ -128,7 +128,9 @@ timer.Delay(0.0001f); // 延时 0.0001 秒
 
 ​	使用位域结构体,将数据直接复制进结构体,再调用`UpdateStatus`进行*归一化处理*
 
-## 文件机构
+​	通过单例模式，省去extern的麻烦
+
+## 文件结构
 
 ```
 RemoteMini_test/
@@ -136,6 +138,8 @@ RemoteMini_test/
 │   ├── MimiRemote/
 │   │   ├── Mini.hpp      # 头文件，定义了 Mini 类及其相关数据结构
 │   │   └── Mini.cpp      # 实现文件，包含 Mini 类方法的具体实现
+│	├── Key/
+│	│	├── KeyBorad.hpp  # only heard库，实现简单的按键检测
 │   └── CRC/              # CRC 校验相关代码
 └── README.md             # 项目说明文档
 ```
@@ -147,8 +151,9 @@ RemoteMini_test/
 ​	在程序启动时调用`Init`方法初始化串口DMA接收:
 
 ```c++
-BSP::Remote::Mini remote;
-remote.Init();
+    // 获取实例
+    auto &remote = BSP::Remote::Mini::getInstance();
+    remote.Init();
 ```
 
 ### 2. 数据解析
@@ -156,11 +161,13 @@ remote.Init();
 ​	当串口受到数据后,在**HAL_UARTEx_RxEventCallback函数**中调用`Parse`方法进行数据解析:
 
 ```c++
-UART_HandleTypeDef huart6; // 假设已配置好
-uint8_t data[REMOTE_MAX_LEN];
-int size = 21; // 数据长度
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    auto &remote = BSP::Remote::Mini::getInstance();
 
-remote.Parse(&huart6, size);
+    remote.Parse(huart, Size);
+}
+
 ```
 
 ### 3. 获取遥控器状态
@@ -197,4 +204,78 @@ auto mouseKeys = remote.mouse();        // 鼠标按键
 auto keyboard = remote.keyBoard(); // 键盘按键
 ```
 
-## 
+---
+
+## SimpleKey 按键检测类
+
+### 功能简介
+SimpleKey 是一个简单而功能完整的按键检测类，用于处理单个按键的各种输入状态。支持以下功能：
+- 点击检测（短按）
+- 长按检测
+- 开关状态（Toggle）
+
+### 特性
+- 点击和长按互斥
+- 支持开关模式（每次点击切换状态）
+
+### 使用方法
+
+#### 1. 基本使用
+```cpp
+// 创建实例
+BSP::Key::SimpleKey key;
+
+// 在主循环中更新按键状态
+void loop() {
+    key.update(/* 按键输入值 */);  // 传入当前按键的状态（true为按下，false为释放）
+}
+```
+
+#### 2. 状态检测
+```cpp
+// 检测点击（短按）
+if (key.getClick()) {
+    // 处理点击事件
+    // 注意：getClick() 读取后会自动清零
+}
+
+// 检测长按
+if (key.getLongPress()) {
+    // 处理长按事件
+}
+
+// 获取开关状态
+if (key.getToggleState()) {
+    // 处理开关打开状态
+}
+```
+
+### 参数配置
+- 长按判定阈值：`LONG_PRESS_THRESHOLD = 500ms`
+  - 可以通过修改此值来调整长按触发的时间
+
+### 工作原理
+
+#### 状态检测逻辑
+1. **按下瞬间**：
+   - 记录按下时刻
+   - 重置长按检测标志
+   - 切换开关状态
+
+2. **按住状态**：
+   - 持续检测是否达到长按时间阈值
+   - 达到阈值后触发长按状态
+
+3. **释放瞬间**：
+   - 如果未达到长按时间，则判定为点击
+   - 重置长按检测标志
+
+#### 状态互斥
+- 长按和点击是互斥的，不会同时触发
+- 长按触发后不会产生点击事件
+
+### 注意事项
+1. `getClick()` 是一次性读取，读取后会自动清零
+2. 长按状态会持续到按键释放
+3. 开关状态在每次点击时切换，不受长按影响
+4. 建议在主循环中定期调用 update() 更新按键状态
